@@ -22,10 +22,10 @@ jobs:
       uses: gradle/actions/setup-gradle@v3
       
     - name: Create Gradle Wrapper
-      run: gradle wrapper --gradle-version 8.0
+      run: gradle wrapper --gradle-version 8.0.2
       
     - name: Build Debug APK
-      run: ./gradlew assembleDebug --stacktrace
+      run: ./gradlew assembleDebug
       
     - name: Upload Debug APK
       uses: actions/upload-artifact@v4
