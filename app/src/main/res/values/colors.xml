@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Primary Colors -->
+    <color name="primary">#1A1A1A</color>
+    <color name="primary_variant">#2D2D2D</color>
+    <color name="on_primary">#FFFFFF</color>
+    
+    <!-- Dynamic Background Colors -->
+    <color name="background_dawn">#FFF8F0</color>
+    <color name="background_day">#FFFFFF</color>
+    <color name="background_dusk">#F5EDE4</color>
+    <color name="background_night">#1A1A1A</color>
+    
+    <!-- Surface colors -->
+    <color name="surface_light">#FFFFFF</color>
+    <color name="surface_dark">#242424</color>
+    
+    <!-- Text colors -->
+    <color name="text_primary_light">#1A1A1A</color>
+    <color name="text_primary_dark">#F5F5F5</color>
+    <color name="text_secondary_light">#666666</color>
+    <color name="text_secondary_dark">#A0A0A0</color>
+    
+    <!-- Mood Colors - 5 point scale -->
+    <color name="mood_1_struggling">#E74C3C</color>
+    <color name="mood_2_low">#F39C12</color>
+    <color name="mood_3_neutral">#95A5A6</color>
+    <color name="mood_4_good">#58D68D</color>
+    <color name="mood_5_great">#27AE60</color>
+    
+    <!-- Accent colors -->
+    <color name="sunrise_accent">#FF9F43</color>
+    <color name="sunset_accent">#A55EEA</color>
+    
+    <!-- Calendar -->
+    <color name="pixel_empty_light">#E8E8E8</color>
+    <color name="pixel_empty_dark">#3D3D3D</color>
+</resources>
