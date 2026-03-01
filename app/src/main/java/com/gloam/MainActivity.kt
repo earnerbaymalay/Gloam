@@ -221,10 +221,12 @@ fun GloamApp(
     val selectedYear by viewModel.selectedYear.collectAsStateWithLifecycle()
     val yearMoodRecords by viewModel.yearMoodRecords.collectAsStateWithLifecycle(emptyList())
     val allEntries by viewModel.allEntries.collectAsStateWithLifecycle(emptyList())
+    val selectedDateEntries by viewModel.selectedDateEntries.collectAsStateWithLifecycle(emptyList())
     val editingEntry by viewModel.editingEntry.collectAsStateWithLifecycle()
 
     var showPinSetup by remember { mutableStateOf(false) }
     var showAbout by remember { mutableStateOf(false) }
+    var filterDate by remember { mutableStateOf<LocalDate?>(null) }
 
     val exportLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.CreateDocument("application/json")
@@ -284,6 +286,7 @@ fun GloamApp(
                             selected = selected,
                             onClick = {
                                 viewModel.setEditingEntry(null)
+                                if (screen == Screen.Entries) filterDate = null
                                 navController.navigate(screen.route) {
                                     popUpTo(navController.graph.findStartDestination().id) {
                                         saveState = true
@@ -322,6 +325,7 @@ fun GloamApp(
                     moodRecords = yearMoodRecords,
                     onYearChange = { viewModel.selectYear(it) },
                     onDateClick = { date ->
+                        filterDate = date
                         viewModel.selectDate(date)
                         navController.navigate(Screen.Entries.route)
                     }
@@ -345,7 +349,7 @@ fun GloamApp(
                     )
                 } else {
                     EntriesScreen(
-                        entries = allEntries,
+                        entries = if (filterDate != null) selectedDateEntries else allEntries,
                         onEntryClick = { viewModel.setEditingEntry(it) }
                     )
                 }
