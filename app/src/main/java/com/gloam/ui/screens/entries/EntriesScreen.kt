@@ -48,9 +48,10 @@ fun EntriesScreen(
             contentPadding = PaddingValues(16.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            // Group by date
+            // Group by date, newest first
             val groupedEntries = entries.groupBy { it.date }
-            
+                .entries.sortedByDescending { it.key }
+
             groupedEntries.forEach { (date, dayEntries) ->
                 item {
                     Text(

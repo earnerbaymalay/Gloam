@@ -155,6 +155,15 @@ class GloamViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
     
+    fun updateEntry(entry: JournalEntry) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            repository.updateEntry(entry)
+            loadTodayEntries()
+            _isLoading.value = false
+        }
+    }
+
     fun deleteEntry(entry: JournalEntry) {
         viewModelScope.launch {
             repository.deleteEntry(entry)
