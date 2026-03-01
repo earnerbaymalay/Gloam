@@ -1,0 +1,1115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Gloam</title>
+  <!--
+    Fonts: Cormorant Garamond (literary display) + Jost (clean UI)
+    For offline/FOSS deployment: self-host via fontsource or google-webfonts-helper.
+  -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+
+  <style>
+    /* ═══════════════════════════════════════════════
+       RESET
+    ═══════════════════════════════════════════════ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    button { cursor: pointer; font-family: inherit; background: none; border: none; }
+    textarea { font-family: inherit; }
+
+    /* ═══════════════════════════════════════════════
+       THEME TOKENS  (updated by JS each tick)
+    ═══════════════════════════════════════════════ */
+    :root {
+      --bg:           #fdf6ec;
+      --surface:      #fff8f2;
+      --surface2:     #f0e6d8;
+      --text-hi:      #1a120b;
+      --text-mid:     #6b5040;
+      --text-lo:      #9e7d68;
+      --accent:       #c96315;
+      --accent-soft:  #f4a261;
+      --sun-col:      #f4a261;
+      --arc-col:      rgba(201,99,21,0.22);
+      --border:       rgba(0,0,0,0.07);
+
+      --mood-1: #c0392b;
+      --mood-2: #e67e22;
+      --mood-3: #f0b429;
+      --mood-4: #27ae60;
+      --mood-5: #2980b9;
+
+      --ease: cubic-bezier(0.4,0,0.2,1);
+      --theme-dur: 1.2s;
+    }
+
+    /* ═══════════════════════════════════════════════
+       BASE
+    ═══════════════════════════════════════════════ */
+    html { height: 100%; }
+
+    body {
+      min-height: 100%;
+      font-family: 'Jost', system-ui, sans-serif;
+      font-weight: 300;
+      background: var(--bg);
+      color: var(--text-hi);
+      max-width: 480px;
+      margin: 0 auto;
+      overflow-x: hidden;
+      transition:
+        background var(--theme-dur) var(--ease),
+        color var(--theme-dur) var(--ease);
+    }
+
+    /* Grain overlay */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.028;
+      background-image:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+    }
+
+    /* ═══════════════════════════════════════════════
+       SOLAR ARC
+    ═══════════════════════════════════════════════ */
+    .solar-header {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .solar-svg {
+      width: 100%;
+      height: 72px;
+      display: block;
+    }
+
+    .arc-bg {
+      stroke: var(--arc-col);
+      stroke-width: 10;
+      fill: none;
+      filter: url(#blur4);
+      transition: stroke var(--theme-dur) var(--ease);
+    }
+
+    .arc-line {
+      stroke: var(--arc-col);
+      stroke-width: 1;
+      fill: none;
+      stroke-dasharray: 4 6;
+      transition: stroke var(--theme-dur) var(--ease);
+    }
+
+    .sun-halo {
+      fill: none;
+      stroke: var(--sun-col);
+      stroke-width: 8;
+      opacity: 0.18;
+      transition: stroke var(--theme-dur) var(--ease);
+      animation: pulse 3s ease-in-out infinite;
+    }
+
+    .sun-body {
+      fill: var(--sun-col);
+      transition: fill var(--theme-dur) var(--ease);
+      filter: url(#glow);
+    }
+
+    @keyframes pulse {
+      0%, 100% { stroke-width: 8; opacity: 0.18; }
+      50%       { stroke-width: 14; opacity: 0.1; }
+    }
+
+    /* ═══════════════════════════════════════════════
+       TOP BAR
+    ═══════════════════════════════════════════════ */
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 4px 24px 20px;
+    }
+
+    .wordmark {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 21px;
+      font-weight: 300;
+      letter-spacing: 0.22em;
+      color: var(--text-mid);
+      transition: color var(--theme-dur) var(--ease);
+    }
+
+    .live-time {
+      font-size: 12px;
+      font-weight: 400;
+      letter-spacing: 0.06em;
+      color: var(--text-lo);
+      transition: color var(--theme-dur) var(--ease);
+    }
+
+    /* ═══════════════════════════════════════════════
+       VIEW SYSTEM
+    ═══════════════════════════════════════════════ */
+    .view { display: none; animation: fadeUp 0.35s var(--ease) both; }
+    .view.active { display: block; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ═══════════════════════════════════════════════
+       TODAY VIEW — Date heading
+    ═══════════════════════════════════════════════ */
+    .date-block {
+      padding: 0 24px 32px;
+    }
+
+    .greeting-line {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 6px;
+      transition: color var(--theme-dur) var(--ease);
+    }
+
+    .date-main {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 42px;
+      font-weight: 300;
+      line-height: 1.05;
+      color: var(--text-hi);
+      transition: color var(--theme-dur) var(--ease);
+    }
+
+    .date-main em {
+      font-style: italic;
+      font-weight: 300;
+    }
+
+    /* ═══════════════════════════════════════════════
+       MOOD PICKER
+    ═══════════════════════════════════════════════ */
+    .mood-block {
+      padding: 0 24px 36px;
+    }
+
+    .label-row {
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--text-lo);
+      margin-bottom: 18px;
+      transition: color var(--theme-dur) var(--ease);
+    }
+
+    .orb-row {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .mood-orb {
+      flex: 1;
+      border-radius: 50%;
+      aspect-ratio: 1;
+      background: var(--mc);
+      opacity: 0.28;
+      position: relative;
+      transition: opacity 0.25s, transform 0.2s, box-shadow 0.3s;
+    }
+
+    .mood-orb:hover { opacity: 0.6; transform: scale(1.08); }
+
+    .mood-orb.active {
+      opacity: 1;
+      transform: scale(1.18);
+      box-shadow: 0 0 22px var(--mc), 0 0 50px color-mix(in srgb, var(--mc) 25%, transparent);
+    }
+
+    .mood-orb[data-m="1"] { --mc: var(--mood-1); }
+    .mood-orb[data-m="2"] { --mc: var(--mood-2); }
+    .mood-orb[data-m="3"] { --mc: var(--mood-3); }
+    .mood-orb[data-m="4"] { --mc: var(--mood-4); }
+    .mood-orb[data-m="5"] { --mc: var(--mood-5); }
+
+    .orb-label {
+      position: absolute;
+      bottom: -18px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 9px;
+      letter-spacing: 0.06em;
+      color: var(--text-lo);
+      white-space: nowrap;
+      pointer-events: none;
+      transition: color var(--theme-dur) var(--ease);
+    }
+
+    /* ═══════════════════════════════════════════════
+       REFLECTION PROMPTS
+    ═══════════════════════════════════════════════ */
+    .prompts-block {
+      padding: 0 24px 28px;
+    }
+
+    .prompt-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 22px 20px 18px;
+      margin-bottom: 10px;
+      transition:
+        background var(--theme-dur) var(--ease),
+        border-color var(--theme-dur) var(--ease);
+    }
+
+    .prompt-index {
+      font-size: 9px;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent-soft);
+      margin-bottom: 8px;
+      transition: color var(--theme-dur) var(--ease);
+    }
+
+    .prompt-q {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 18px;
+      font-style: italic;
+      font-weight: 400;
+      color: var(--text-mid);
+      line-height: 1.5;
+      margin-bottom: 14px;
+      transition: color var(--theme-dur) var(--ease);
+    }
+
+    .prompt-field {
+      width: 100%;
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid var(--border);
+      padding: 8px 0 6px;
+      font-family: 'Jost', system-ui, sans-serif;
+      font-size: 15px;
+      font-weight: 300;
+      color: var(--text-hi);
+      resize: none;
+      outline: none;
+      min-height: 56px;
+      line-height: 1.6;
+      transition:
+        border-color 0.2s,
+        color var(--theme-dur) var(--ease);
+    }
+
+    .prompt-field::placeholder {
+      color: var(--text-lo);
+      opacity: 0.55;
+    }
+
+    .prompt-field:focus { border-bottom-color: var(--accent); }
+
+    /* ═══════════════════════════════════════════════
+       SAVE BUTTON
+    ═══════════════════════════════════════════════ */
+    .save-wrap {
+      padding: 4px 24px 32px;
+    }
+
+    .save-btn {
+      width: 100%;
+      padding: 15px 24px;
+      background: var(--text-hi);
+      color: var(--bg);
+      border-radius: 11px;
+      font-family: 'Jost', system-ui, sans-serif;
+      font-size: 13px;
+      font-weight: 400;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      transition:
+        background var(--theme-dur) var(--ease),
+        color var(--theme-dur) var(--ease),
+        opacity 0.18s,
+        transform 0.12s;
+    }
+
+    .save-btn:hover  { opacity: 0.82; }
+    .save-btn:active { transform: scale(0.98); }
+
+    /* ═══════════════════════════════════════════════
+       YEAR VIEW
+    ═══════════════════════════════════════════════ */
+    .year-top {
+      padding: 0 24px 8px;
+      display: flex;
+      align-items: baseline;
+      gap: 20px;
+    }
+
+    .year-num {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 42px;
+      font-weight: 300;
+      color: var(--text-hi);
+      transition: color var(--theme-dur) var(--ease);
+    }
+
+    .year-arrows {
+      display: flex;
+      gap: 8px;
+    }
+
+    .yr-btn {
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      color: var(--text-mid);
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.18s, border-color var(--theme-dur) var(--ease), color var(--theme-dur) var(--ease);
+    }
+
+    .yr-btn:hover { background: var(--surface2); }
+
+    .mood-legend {
+      display: flex;
+      gap: 14px;
+      padding: 8px 24px 20px;
+      flex-wrap: wrap;
+    }
+
+    .leg {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 10px;
+      letter-spacing: 0.06em;
+      color: var(--text-lo);
+      transition: color var(--theme-dur) var(--ease);
+    }
+
+    .leg-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+
+    .year-months {
+      padding: 0 24px 24px;
+    }
+
+    .month-row {
+      margin-bottom: 18px;
+    }
+
+    .month-name {
+      font-size: 9px;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--text-lo);
+      margin-bottom: 5px;
+      transition: color var(--theme-dur) var(--ease);
+    }
+
+    .month-days {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 3px;
+    }
+
+    .day-sq {
+      width: 13px;
+      height: 13px;
+      border-radius: 2px;
+      transition: transform 0.1s;
+    }
+
+    .day-sq:hover { transform: scale(1.5); z-index: 5; position: relative; }
+
+    /* ═══════════════════════════════════════════════
+       ENTRIES VIEW
+    ═══════════════════════════════════════════════ */
+    .entries-top {
+      padding: 0 24px 24px;
+    }
+
+    .entries-title {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 42px;
+      font-weight: 300;
+      color: var(--text-hi);
+      transition: color var(--theme-dur) var(--ease);
+    }
+
+    .entries-body {
+      padding: 0 24px;
+    }
+
+    .egroup {
+      margin-bottom: 28px;
+    }
+
+    .egroup-label {
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 10px;
+      transition: color var(--theme-dur) var(--ease);
+    }
+
+    .ecard {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 18px 20px;
+      margin-bottom: 8px;
+      transition:
+        background var(--theme-dur) var(--ease),
+        border-color var(--theme-dur) var(--ease),
+        transform 0.15s;
+    }
+
+    .ecard:hover { transform: translateY(-2px); }
+
+    .ecard-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .etype {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 12px;
+      font-weight: 400;
+      letter-spacing: 0.06em;
+      color: var(--text-mid);
+      transition: color var(--theme-dur) var(--ease);
+    }
+
+    .etype-icon { font-size: 13px; }
+
+    .emood-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .epreview {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 16px;
+      font-style: italic;
+      color: var(--text-mid);
+      line-height: 1.55;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      transition: color var(--theme-dur) var(--ease);
+    }
+
+    .etime {
+      font-size: 10px;
+      letter-spacing: 0.06em;
+      color: var(--text-lo);
+      margin-top: 10px;
+      transition: color var(--theme-dur) var(--ease);
+    }
+
+    .empty-state {
+      padding: 56px 0;
+      text-align: center;
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-style: italic;
+      font-size: 19px;
+      color: var(--text-lo);
+      line-height: 1.7;
+    }
+
+    /* ═══════════════════════════════════════════════
+       BOTTOM NAV
+    ═══════════════════════════════════════════════ */
+    .nav {
+      position: fixed;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 480px;
+      background: var(--bg);
+      border-top: 1px solid var(--border);
+      display: flex;
+      padding: 10px 0 env(safe-area-inset-bottom, 16px);
+      z-index: 500;
+      transition:
+        background var(--theme-dur) var(--ease),
+        border-color var(--theme-dur) var(--ease);
+    }
+
+    .nav-btn {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      padding: 8px 0;
+      color: var(--text-lo);
+      transition: color 0.2s;
+    }
+
+    .nav-btn.active { color: var(--accent); }
+
+    .nav-icon { font-size: 17px; line-height: 1; }
+
+    .nav-txt {
+      font-size: 9px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    /* ═══════════════════════════════════════════════
+       TOAST
+    ═══════════════════════════════════════════════ */
+    .toast {
+      position: fixed;
+      bottom: 90px;
+      left: 50%;
+      transform: translateX(-50%) translateY(12px);
+      background: var(--text-hi);
+      color: var(--bg);
+      padding: 12px 22px;
+      border-radius: 100px;
+      font-size: 12px;
+      font-weight: 400;
+      letter-spacing: 0.08em;
+      opacity: 0;
+      pointer-events: none;
+      white-space: nowrap;
+      transition: opacity 0.28s var(--ease), transform 0.28s var(--ease),
+                  background var(--theme-dur) var(--ease), color var(--theme-dur) var(--ease);
+      z-index: 600;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* ═══════════════════════════════════════════════
+       NAV SPACER
+    ═══════════════════════════════════════════════ */
+    .spacer { height: 88px; }
+  </style>
+</head>
+
+<body>
+
+  <!-- ── Solar Arc ─────────────────────────────── -->
+  <div class="solar-header">
+    <svg class="solar-svg" viewBox="0 0 480 72" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <filter id="blur4"><feGaussianBlur stdDeviation="4"/></filter>
+        <filter id="glow">
+          <feGaussianBlur stdDeviation="3.5" result="b"/>
+          <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+      </defs>
+      <!-- arc glow -->
+      <path class="arc-bg"  d="M -20 80 Q 240 -24 500 80"/>
+      <!-- arc dashes -->
+      <path class="arc-line" d="M -20 80 Q 240 -24 500 80"/>
+      <!-- sun halo -->
+      <circle class="sun-halo" id="sunHalo" cx="240" cy="8" r="9"/>
+      <!-- sun body -->
+      <circle class="sun-body" id="sunBody" cx="240" cy="8" r="5"/>
+    </svg>
+  </div>
+
+  <!-- ── Top bar ───────────────────────────────── -->
+  <div class="top-bar">
+    <span class="wordmark">gloam</span>
+    <span class="live-time" id="liveTime">—</span>
+  </div>
+
+  <!-- ══════════════════════════════════════════════
+       TODAY VIEW
+  ══════════════════════════════════════════════ -->
+  <div class="view active" id="v-today">
+
+    <div class="date-block">
+      <div class="greeting-line" id="greeting">Good morning</div>
+      <div class="date-main">
+        <em id="dayName">Monday</em><br>
+        <span id="dayDate">March 1</span>
+      </div>
+    </div>
+
+    <div class="mood-block">
+      <div class="label-row">How are you feeling?</div>
+      <div class="orb-row" id="orbRow">
+        <button class="mood-orb" data-m="1"><span class="orb-label">hard</span></button>
+        <button class="mood-orb" data-m="2"><span class="orb-label">low</span></button>
+        <button class="mood-orb" data-m="3"><span class="orb-label">okay</span></button>
+        <button class="mood-orb" data-m="4"><span class="orb-label">good</span></button>
+        <button class="mood-orb" data-m="5"><span class="orb-label">great</span></button>
+      </div>
+    </div>
+
+    <div style="height:26px"></div>
+
+    <div class="prompts-block" id="promptsBlock">
+      <!-- Injected by renderPrompts() -->
+    </div>
+
+    <div class="save-wrap">
+      <button class="save-btn" id="saveBtn">Save Entry</button>
+    </div>
+
+    <div class="spacer"></div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════
+       YEAR VIEW
+  ══════════════════════════════════════════════ -->
+  <div class="view" id="v-year">
+
+    <div class="year-top">
+      <div class="year-num" id="yearNum">2025</div>
+      <div class="year-arrows">
+        <button class="yr-btn" id="prevYr">‹</button>
+        <button class="yr-btn" id="nextYr">›</button>
+      </div>
+    </div>
+
+    <div class="mood-legend">
+      <div class="leg"><div class="leg-dot" style="background:var(--mood-1)"></div>Hard</div>
+      <div class="leg"><div class="leg-dot" style="background:var(--mood-2)"></div>Low</div>
+      <div class="leg"><div class="leg-dot" style="background:var(--mood-3)"></div>Okay</div>
+      <div class="leg"><div class="leg-dot" style="background:var(--mood-4)"></div>Good</div>
+      <div class="leg"><div class="leg-dot" style="background:var(--mood-5)"></div>Great</div>
+    </div>
+
+    <div class="year-months" id="yearMonths">
+      <!-- Injected by renderYear() -->
+    </div>
+
+    <div class="spacer"></div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════
+       ENTRIES VIEW
+  ══════════════════════════════════════════════ -->
+  <div class="view" id="v-entries">
+
+    <div class="entries-top">
+      <div class="label-row">Journal</div>
+      <div class="entries-title">All Entries</div>
+    </div>
+
+    <div class="entries-body" id="entriesBody">
+      <!-- Injected by renderEntries() -->
+    </div>
+
+    <div class="spacer"></div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════
+       BOTTOM NAV
+  ══════════════════════════════════════════════ -->
+  <nav class="nav">
+    <button class="nav-btn active" data-view="today">
+      <span class="nav-icon">◎</span>
+      <span class="nav-txt">Today</span>
+    </button>
+    <button class="nav-btn" data-view="year">
+      <span class="nav-icon">▦</span>
+      <span class="nav-txt">Year</span>
+    </button>
+    <button class="nav-btn" data-view="entries">
+      <span class="nav-icon">≡</span>
+      <span class="nav-txt">Entries</span>
+    </button>
+  </nav>
+
+  <div class="toast" id="toast"></div>
+
+  <!-- ══════════════════════════════════════════════
+       SCRIPT
+  ══════════════════════════════════════════════ -->
+  <script>
+  'use strict';
+
+  // ── Theme palette ─────────────────────────────────────────────────────────
+  const THEMES = {
+    night:     { bg:'#0d0b18', sf:'#15122a', sf2:'#1d1935', hi:'#cec0a8', mid:'#8a7a62', lo:'#5a4e3a', ac:'#7870c8', acs:'#a89ee4', sun:'#7870c8', arc:'rgba(120,112,200,0.28)' },
+    predawn:   { bg:'#190f26', sf:'#231540', sf2:'#2e1a4d', hi:'#e4ceac', mid:'#b07848', lo:'#7a5030', ac:'#e8864e', acs:'#f4b27a', sun:'#e8864e', arc:'rgba(232,134,78,0.38)' },
+    dawn:      { bg:'#1e1230', sf:'#2a1a44', sf2:'#361f52', hi:'#edcfaa', mid:'#c07a50', lo:'#8a5030', ac:'#f4a261', acs:'#f8c490', sun:'#f4a261', arc:'rgba(244,162,97,0.42)' },
+    morning:   { bg:'#fdf6ec', sf:'#fff8f2', sf2:'#f0e6d8', hi:'#1a120b', mid:'#6b5040', lo:'#9e7d68', ac:'#c96315', acs:'#f4a261', sun:'#f4a261', arc:'rgba(201,99,21,0.22)' },
+    noon:      { bg:'#fefdf7', sf:'#fffef9', sf2:'#f6f2e8', hi:'#191806', mid:'#524830', lo:'#888058', ac:'#8b7355', acs:'#c4a97a', sun:'#f8d45a', arc:'rgba(139,115,85,0.18)' },
+    afternoon: { bg:'#fdf4e8', sf:'#fff6ee', sf2:'#f6e8d4', hi:'#1c1206', mid:'#684020', lo:'#9a6840', ac:'#c86010', acs:'#f08030', sun:'#f08030', arc:'rgba(200,96,16,0.26)' },
+    dusk:      { bg:'#2a1832', sf:'#3a2248', sf2:'#46295a', hi:'#f0c8a0', mid:'#c08050', lo:'#886040', ac:'#df7a52', acs:'#f4a272', sun:'#df7a52', arc:'rgba(223,122,82,0.38)' },
+    evening:   { bg:'#180f28', sf:'#241840', sf2:'#301f4e', hi:'#d8c0aa', mid:'#9a7860', lo:'#6a5040', ac:'#9b72cf', acs:'#c4a0f0', sun:'#9b72cf', arc:'rgba(155,114,207,0.32)' },
+  };
+
+  function pickTheme(h) {
+    if (h >= 22 || h < 4)  return 'night';
+    if (h < 5)             return 'predawn';
+    if (h < 7)             return 'dawn';
+    if (h < 10)            return 'morning';
+    if (h < 14)            return 'noon';
+    if (h < 17)            return 'afternoon';
+    if (h < 20)            return 'dusk';
+    return 'evening';
+  }
+
+  function applyTheme(name) {
+    const t = THEMES[name];
+    const r = document.documentElement.style;
+    r.setProperty('--bg',          t.bg);
+    r.setProperty('--surface',     t.sf);
+    r.setProperty('--surface2',    t.sf2);
+    r.setProperty('--text-hi',     t.hi);
+    r.setProperty('--text-mid',    t.mid);
+    r.setProperty('--text-lo',     t.lo);
+    r.setProperty('--accent',      t.ac);
+    r.setProperty('--accent-soft', t.acs);
+    r.setProperty('--sun-col',     t.sun);
+    r.setProperty('--arc-col',     t.arc);
+  }
+
+  // ── Solar arc positioning ──────────────────────────────────────────────────
+  // Arc: quadratic bezier  M -20 80  Q 240 -24  500 80
+  function solarProgress(h, m) {
+    const t = h + m / 60;
+    return Math.max(0, Math.min(1, (t - 5) / 15));  // 5am–8pm = full arc
+  }
+
+  function moveSun(p) {
+    // Bezier: P0=(-20,80)  P1=(240,-24)  P2=(500,80)
+    const x = (1-p)*(1-p)*(-20) + 2*(1-p)*p*240 + p*p*500;
+    const y = (1-p)*(1-p)* 80  + 2*(1-p)*p*(-24) + p*p* 80;
+    document.getElementById('sunBody').setAttribute('cx', x.toFixed(1));
+    document.getElementById('sunBody').setAttribute('cy', y.toFixed(1));
+    document.getElementById('sunHalo').setAttribute('cx', x.toFixed(1));
+    document.getElementById('sunHalo').setAttribute('cy', y.toFixed(1));
+  }
+
+  // ── Clock + greeting ───────────────────────────────────────────────────────
+  const DAYS   = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+
+  function greetingFor(h) {
+    if (h < 5)  return 'Good night';
+    if (h < 9)  return 'Good morning';
+    if (h < 12) return 'Late morning';
+    if (h < 14) return 'Good afternoon';
+    if (h < 17) return 'Afternoon';
+    if (h < 20) return 'Good evening';
+    return 'Good night';
+  }
+
+  function tick() {
+    const now = new Date();
+    const h = now.getHours(), m = now.getMinutes();
+
+    // Clock
+    const ampm = h >= 12 ? 'PM' : 'AM';
+    const dh   = h % 12 || 12;
+    document.getElementById('liveTime').textContent = `${dh}:${String(m).padStart(2,'0')} ${ampm}`;
+
+    // Date heading
+    document.getElementById('greeting').textContent = greetingFor(h);
+    document.getElementById('dayName').textContent  = DAYS[now.getDay()];
+    document.getElementById('dayDate').textContent  = `${MONTHS[now.getMonth()]} ${now.getDate()}`;
+
+    // Prompt heading
+    const pLabel = document.getElementById('promptLabel');
+    if (pLabel) pLabel.textContent = h >= 12 ? 'Evening Reflection' : 'Morning Reflection';
+
+    // Theme + arc
+    applyTheme(pickTheme(h));
+    moveSun(solarProgress(h, m));
+  }
+
+  // ── Sample data ────────────────────────────────────────────────────────────
+  const MORNING_PREVIEWS = [
+    "Woke up lighter than usual. The quiet before the house stirs is its own kind of grace.",
+    "Three things I'm grateful for this morning: sleep, silence, and the smell of coffee.",
+    "Carrying yesterday's weight, but choosing to set some of it down.",
+    "The world felt soft this morning — gentle and unhurried through the window.",
+    "Slept well. That alone feels like enough.",
+  ];
+  const EVENING_PREVIEWS = [
+    "Something small happened today I want to remember. A stranger held the door.",
+    "Tired, but it was a useful kind of tired. The afternoon light was beautiful.",
+    "I managed what I set out to do. That's enough.",
+    "Hard parts arrived; I stayed present through them. That counts.",
+    "The evening came quietly. I breathed through the difficult hours.",
+    "Found something to laugh about even in the difficult parts of today.",
+  ];
+  const MORNING_PROMPTS = [
+    "What are you grateful for this morning?",
+    "What intention do you want to carry through today?",
+    "How does your body feel right now?",
+  ];
+  const EVENING_PROMPTS = [
+    "What was the most meaningful moment of today?",
+    "What would you do differently if you had today again?",
+    "What are you releasing before sleep?",
+  ];
+
+  const MOOD_COLORS = {1:'var(--mood-1)',2:'var(--mood-2)',3:'var(--mood-3)',4:'var(--mood-4)',5:'var(--mood-5)'};
+  const MOOD_LABELS = {1:'Hard',2:'Low',3:'Okay',4:'Good',5:'Great'};
+
+  function seedData() {
+    const entries = [];
+    const now     = new Date();
+    const moods   = [2,3,4,4,5,3,4,5,4,3,3,4,5,4,3,5,4,4,3,2,3,4,5,5,4,4,3,4,5,4,4,3,5];
+    for (let i = 110; i >= 0; i--) {
+      const d = new Date(now);
+      d.setDate(d.getDate() - i);
+      if (Math.random() < 0.7) {
+        const mi = Math.floor(Math.random() * moods.length);
+        if (Math.random() < 0.75) entries.push({
+          id: entries.length,
+          date: d.toISOString().split('T')[0],
+          type: 'morning',
+          mood: moods[mi],
+          preview: MORNING_PREVIEWS[Math.floor(Math.random() * MORNING_PREVIEWS.length)],
+          time: `${6+Math.floor(Math.random()*3)}:${String(Math.floor(Math.random()*60)).padStart(2,'0')} AM`,
+        });
+        if (Math.random() < 0.55) entries.push({
+          id: entries.length + 1000,
+          date: d.toISOString().split('T')[0],
+          type: 'evening',
+          mood: moods[(mi + 2) % moods.length],
+          preview: EVENING_PREVIEWS[Math.floor(Math.random() * EVENING_PREVIEWS.length)],
+          time: `${6+Math.floor(Math.random()*4)}:${String(Math.floor(Math.random()*60)).padStart(2,'0')} PM`,
+        });
+      }
+    }
+    return entries;
+  }
+
+  const entries = seedData();
+
+  // ── Prompts render ─────────────────────────────────────────────────────────
+  function renderPrompts() {
+    const h    = new Date().getHours();
+    const qs   = h >= 12 ? EVENING_PROMPTS : MORNING_PROMPTS;
+    const wrap = document.getElementById('promptsBlock');
+    wrap.innerHTML = `<div class="label-row" id="promptLabel">${h>=12 ? 'Evening Reflection' : 'Morning Reflection'}</div>`;
+    qs.forEach((q, i) => {
+      const card = document.createElement('div');
+      card.className = 'prompt-card';
+      card.innerHTML = `
+        <div class="prompt-index">0${i+1}</div>
+        <div class="prompt-q">${q}</div>
+        <textarea class="prompt-field" placeholder="Write freely…" rows="2"></textarea>
+      `;
+      wrap.appendChild(card);
+    });
+  }
+
+  // ── Nav switching ──────────────────────────────────────────────────────────
+  function switchTo(viewId) {
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('v-' + viewId).classList.add('active');
+    document.querySelector(`.nav-btn[data-view="${viewId}"]`).classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (viewId === 'year')    renderYear(currentYear);
+    if (viewId === 'entries') renderEntries();
+  }
+
+  document.querySelectorAll('.nav-btn').forEach(b =>
+    b.addEventListener('click', () => switchTo(b.dataset.view)));
+
+  // ── Mood selection ─────────────────────────────────────────────────────────
+  let selectedMood = null;
+  document.querySelectorAll('.mood-orb').forEach(orb => {
+    orb.addEventListener('click', () => {
+      document.querySelectorAll('.mood-orb').forEach(o => o.classList.remove('active'));
+      orb.classList.add('active');
+      selectedMood = +orb.dataset.m;
+    });
+  });
+
+  // ── Save ───────────────────────────────────────────────────────────────────
+  document.getElementById('saveBtn').addEventListener('click', () => {
+    const fields    = [...document.querySelectorAll('.prompt-field')];
+    const responses = fields.map(f => f.value.trim());
+    const hasText   = responses.some(r => r.length > 0);
+
+    if (!hasText && selectedMood === null) {
+      showToast('Add a mood or write something first');
+      return;
+    }
+
+    const now = new Date();
+    const h   = now.getHours();
+    entries.unshift({
+      id:      Date.now(),
+      date:    now.toISOString().split('T')[0],
+      type:    h >= 12 ? 'evening' : 'morning',
+      mood:    selectedMood ?? 3,
+      preview: responses.find(r => r) || '—',
+      time:    now.toLocaleTimeString('en-US', { hour:'numeric', minute:'2-digit' }),
+    });
+
+    fields.forEach(f => f.value = '');
+    document.querySelectorAll('.mood-orb').forEach(o => o.classList.remove('active'));
+    selectedMood = null;
+    showToast('Entry saved ✓');
+  });
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2600);
+  }
+
+  // ── Year grid ──────────────────────────────────────────────────────────────
+  let currentYear = new Date().getFullYear();
+
+  const MONTH_NAMES = ['January','February','March','April','May','June',
+                       'July','August','September','October','November','December'];
+
+  function moodForDate(ds) {
+    const e = entries.find(e => e.date === ds);
+    return e ? e.mood : null;
+  }
+
+  function renderYear(year) {
+    document.getElementById('yearNum').textContent = year;
+    const wrap   = document.getElementById('yearMonths');
+    wrap.innerHTML = '';
+    const today  = new Date(); today.setHours(0,0,0,0);
+
+    for (let mo = 0; mo < 12; mo++) {
+      const mrow = document.createElement('div');
+      mrow.className = 'month-row';
+
+      const ml = document.createElement('div');
+      ml.className = 'month-name';
+      ml.textContent = MONTH_NAMES[mo];
+      mrow.appendChild(ml);
+
+      const drow = document.createElement('div');
+      drow.className = 'month-days';
+
+      const daysIn = new Date(year, mo + 1, 0).getDate();
+      for (let d = 1; d <= daysIn; d++) {
+        const ds   = `${year}-${String(mo+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+        const mood = moodForDate(ds);
+        const date = new Date(year, mo, d);
+        const fut  = date > today;
+
+        const sq = document.createElement('div');
+        sq.className = 'day-sq';
+        sq.title = ds + (mood ? ` · ${MOOD_LABELS[mood]}` : '');
+
+        if (mood) {
+          sq.style.background = `var(--mood-${mood})`;
+          sq.style.opacity    = '0.82';
+        } else {
+          sq.style.background = 'var(--surface2)';
+          sq.style.opacity    = fut ? '0.12' : '0.38';
+        }
+
+        drow.appendChild(sq);
+      }
+
+      mrow.appendChild(drow);
+      wrap.appendChild(mrow);
+    }
+  }
+
+  document.getElementById('prevYr').addEventListener('click', () => { currentYear--; renderYear(currentYear); });
+  document.getElementById('nextYr').addEventListener('click', () => { currentYear++; renderYear(currentYear); });
+
+  // ── Entries list ───────────────────────────────────────────────────────────
+  function renderEntries() {
+    const body = document.getElementById('entriesBody');
+    body.innerHTML = '';
+
+    const sorted = [...entries].sort((a, b) =>
+      b.date.localeCompare(a.date) || (a.type === 'morning' ? 1 : -1));
+
+    const grouped = {};
+    sorted.forEach(e => { (grouped[e.date] = grouped[e.date] || []).push(e); });
+
+    const todayStr = new Date().toISOString().split('T')[0];
+
+    Object.entries(grouped).forEach(([ds, grp]) => {
+      const g = document.createElement('div');
+      g.className = 'egroup';
+
+      const lbl = document.createElement('div');
+      lbl.className = 'egroup-label';
+      if (ds === todayStr) {
+        lbl.textContent = 'Today';
+      } else {
+        const d = new Date(ds + 'T12:00:00');
+        lbl.textContent = d.toLocaleDateString('en-US', { weekday:'long', month:'long', day:'numeric' });
+      }
+      g.appendChild(lbl);
+
+      grp.forEach(e => {
+        const card = document.createElement('div');
+        card.className = 'ecard';
+        const mc = `var(--mood-${e.mood})`;
+        card.innerHTML = `
+          <div class="ecard-top">
+            <div class="etype">
+              <span class="etype-icon">${e.type === 'morning' ? '☀' : '☽'}</span>
+              ${e.type === 'morning' ? 'Morning' : 'Evening'}
+            </div>
+            <div class="emood-dot" style="background:${mc}"></div>
+          </div>
+          <div class="epreview">"${e.preview}"</div>
+          <div class="etime">${e.time}</div>
+        `;
+        g.appendChild(card);
+      });
+
+      body.appendChild(g);
+    });
+
+    if (!Object.keys(grouped).length) {
+      body.innerHTML = '<div class="empty-state">No entries yet.<br>Begin your first reflection.</div>';
+    }
+  }
+
+  // ── Init ───────────────────────────────────────────────────────────────────
+  tick();
+  renderPrompts();
+  setInterval(tick, 30_000);
+  </script>
+
+</body>
+</html>
