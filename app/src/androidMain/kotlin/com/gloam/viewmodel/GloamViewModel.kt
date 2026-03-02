@@ -31,12 +31,7 @@ class GloamViewModel(application: Application) : AndroidViewModel(application) {
         _longitude.value = lon
     }
 
-    // Daylight progress for theme
-    val daylightProgress: StateFlow<Float> = combine(_latitude, _longitude) { lat, lon ->
-        SunCalculator.getDaylightProgress(lat, lon)
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 0.7f)
-
-    // Sun times
+    // Sun times — single source of truth computed once per location change
     val sunTimes: StateFlow<SunCalculator.SunTimes> = combine(_latitude, _longitude) { lat, lon ->
         SunCalculator.calculate(lat, lon)
     }.stateIn(
@@ -49,16 +44,47 @@ class GloamViewModel(application: Application) : AndroidViewModel(application) {
         )
     )
 
-    // Current entry type based on time
-    val currentEntryType: StateFlow<EntryType> = combine(_latitude, _longitude) { lat, lon ->
-        val times = SunCalculator.calculate(lat, lon)
+    // Daylight progress derived from sunTimes — no extra SunCalculator.calculate() call
+    val daylightProgress: StateFlow<Float> = sunTimes.map { times ->
+        val nowTime = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).time
+        val currentMinutes = nowTime.hour * 60 + nowTime.minute
+        val sunriseMinutes = times.sunrise.hour * 60 + times.sunrise.minute
+        val sunsetMinutes = times.sunset.hour * 60 + times.sunset.minute
+        val noonMinutes = times.solarNoon.hour * 60 + times.solarNoon.minute
+        when {
+            currentMinutes < sunriseMinutes ->
+                (currentMinutes.toFloat() / sunriseMinutes) * 0.1f
+            currentMinutes < noonMinutes -> {
+                val progress = (currentMinutes - sunriseMinutes).toFloat() / (noonMinutes - sunriseMinutes)
+                0.1f + progress * 0.9f
+            }
+            currentMinutes < sunsetMinutes -> {
+                val progress = (currentMinutes - noonMinutes).toFloat() / (sunsetMinutes - noonMinutes)
+                1.0f - progress * 0.9f
+            }
+            else -> {
+                val remaining = 1440 - currentMinutes
+                val afterSunset = 1440 - sunsetMinutes
+                (remaining.toFloat() / afterSunset) * 0.1f
+            }
+        }
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 0.7f)
+
+    // Current entry type derived from sunTimes — no extra SunCalculator.calculate() call
+    val currentEntryType: StateFlow<EntryType> = sunTimes.map { times ->
         val now = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).time
         if (now < times.solarNoon) EntryType.SUNRISE else EntryType.SUNSET
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), EntryType.SUNRISE)
 
-    // Today's entries
-    private val _todayEntries = MutableStateFlow<List<JournalEntry>>(emptyList())
-    val todayEntries: StateFlow<List<JournalEntry>> = _todayEntries.asStateFlow()
+    // Today's date — update to re-trigger todayEntries reactive collection
+    private val _today = MutableStateFlow(
+        Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date
+    )
+
+    // Today's entries — reactive StateFlow, no manual collect/leak
+    val todayEntries: StateFlow<List<JournalEntry>> = _today.flatMapLatest { date ->
+        repository.getEntriesForDate(date)
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     // Current prompts
     private val _currentPrompts = MutableStateFlow<Triple<Prompt, Prompt, Prompt>?>(null)
@@ -94,19 +120,6 @@ class GloamViewModel(application: Application) : AndroidViewModel(application) {
     // UI state
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
-
-    init {
-        loadTodayEntries()
-    }
-
-    fun loadTodayEntries() {
-        viewModelScope.launch {
-            val today = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date
-            repository.getEntriesForDate(today).collect { entries ->
-                _todayEntries.value = entries
-            }
-        }
-    }
 
     fun loadPromptsForType(type: EntryType) {
         viewModelScope.launch {
@@ -161,7 +174,8 @@ class GloamViewModel(application: Application) : AndroidViewModel(application) {
                 repository.saveEntry(entry)
             }
 
-            loadTodayEntries()
+            // Refresh today's reactive flow by re-emitting today's date
+            _today.value = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date
             _isLoading.value = false
         }
     }
@@ -170,7 +184,7 @@ class GloamViewModel(application: Application) : AndroidViewModel(application) {
         viewModelScope.launch {
             _isLoading.value = true
             repository.updateEntry(entry)
-            loadTodayEntries()
+            _today.value = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date
             _isLoading.value = false
         }
     }
@@ -178,15 +192,15 @@ class GloamViewModel(application: Application) : AndroidViewModel(application) {
     fun deleteEntry(entry: JournalEntry) {
         viewModelScope.launch {
             repository.deleteEntry(entry)
-            loadTodayEntries()
+            _today.value = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date
         }
     }
 
     fun hasEntryForToday(type: EntryType): Boolean {
-        return _todayEntries.value.any { it.entryType == type }
+        return todayEntries.value.any { it.entryType == type }
     }
 
     fun getTodayEntry(type: EntryType): JournalEntry? {
-        return _todayEntries.value.find { it.entryType == type }
+        return todayEntries.value.find { it.entryType == type }
     }
 }

@@ -1,4 +1,4 @@
-CREATE TABLE JournalEntry (
+CREATE TABLE IF NOT EXISTS JournalEntry (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     date TEXT NOT NULL,
     entryType TEXT NOT NULL,
@@ -9,10 +9,11 @@ CREATE TABLE JournalEntry (
     response2 TEXT NOT NULL,
     prompt3 TEXT NOT NULL,
     response3 TEXT NOT NULL,
-    createdAt TEXT NOT NULL
+    createdAt TEXT NOT NULL,
+    updatedAt TEXT NOT NULL
 );
 
-CREATE TABLE MoodRecord (
+CREATE TABLE IF NOT EXISTS MoodRecord (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     date TEXT NOT NULL UNIQUE,
     averageMood REAL,
@@ -20,7 +21,7 @@ CREATE TABLE MoodRecord (
     sunsetMood INTEGER
 );
 
-CREATE TABLE Prompt (
+CREATE TABLE IF NOT EXISTS Prompt (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     entryType TEXT NOT NULL,
     text TEXT NOT NULL,
@@ -41,8 +42,8 @@ getEntriesInRange:
 SELECT * FROM JournalEntry WHERE date >= :start AND date <= :end ORDER BY date DESC;
 
 insertEntry:
-INSERT INTO JournalEntry(date, entryType, moodScore, prompt1, response1, prompt2, response2, prompt3, response3, createdAt)
-VALUES (:date, :entryType, :moodScore, :prompt1, :response1, :prompt2, :response2, :prompt3, :response3, :createdAt);
+INSERT INTO JournalEntry(date, entryType, moodScore, prompt1, response1, prompt2, response2, prompt3, response3, createdAt, updatedAt)
+VALUES (:date, :entryType, :moodScore, :prompt1, :response1, :prompt2, :response2, :prompt3, :response3, :createdAt, :updatedAt);
 
 updateEntry:
 UPDATE JournalEntry SET moodScore = :moodScore, response1 = :response1, response2 = :response2, response3 = :response3

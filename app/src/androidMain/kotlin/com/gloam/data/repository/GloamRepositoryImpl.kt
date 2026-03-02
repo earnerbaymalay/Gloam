@@ -1,11 +1,15 @@
 package com.gloam.data.repository
 
+import app.cash.sqldelight.coroutines.asFlow
+import app.cash.sqldelight.coroutines.mapToList
 import com.gloam.data.db.GloamDatabase
 import com.gloam.data.model.*
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDate
+import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 
@@ -14,29 +18,30 @@ import kotlinx.datetime.toLocalDateTime
  */
 class GloamRepositoryImpl(private val database: GloamDatabase) : GloamRepository {
 
-    private val entryQueries = database.gloamDatabaseQueries
-    private val moodQueries = database.gloamDatabaseQueries
-    private val promptQueries = database.gloamDatabaseQueries
+    private val queries = database.gloamDatabaseQueries
 
     // ── Entries ───────────────────────────────────────────────────────────────
 
-    override fun getAllEntries(): Flow<List<JournalEntry>> = flow {
-        emit(entryQueries.getAllEntries().executeAsList().map { it.toModel() })
-    }
+    override fun getAllEntries(): Flow<List<JournalEntry>> =
+        queries.getAllEntries().asFlow().mapToList(Dispatchers.IO).map { list ->
+            list.map { it.toModel() }
+        }
 
-    override fun getEntriesForDate(date: LocalDate): Flow<List<JournalEntry>> = flow {
-        emit(entryQueries.getEntriesForDate(date.toString()).executeAsList().map { it.toModel() })
-    }
+    override fun getEntriesForDate(date: LocalDate): Flow<List<JournalEntry>> =
+        queries.getEntriesForDate(date.toString()).asFlow().mapToList(Dispatchers.IO).map { list ->
+            list.map { it.toModel() }
+        }
 
     override suspend fun getEntry(date: LocalDate, type: EntryType): JournalEntry? =
-        entryQueries.getEntry(date.toString(), type.name).executeAsOneOrNull()?.toModel()
+        queries.getEntry(date.toString(), type.name).executeAsOneOrNull()?.toModel()
 
-    override fun getEntriesInRange(start: LocalDate, end: LocalDate): Flow<List<JournalEntry>> = flow {
-        emit(entryQueries.getEntriesInRange(start.toString(), end.toString()).executeAsList().map { it.toModel() })
-    }
+    override fun getEntriesInRange(start: LocalDate, end: LocalDate): Flow<List<JournalEntry>> =
+        queries.getEntriesInRange(start.toString(), end.toString()).asFlow().mapToList(Dispatchers.IO).map { list ->
+            list.map { it.toModel() }
+        }
 
     override suspend fun saveEntry(entry: JournalEntry): Long {
-        entryQueries.insertEntry(
+        queries.insertEntry(
             date = entry.date.toString(),
             entryType = entry.entryType.name,
             moodScore = entry.moodScore.toLong(),
@@ -46,15 +51,16 @@ class GloamRepositoryImpl(private val database: GloamDatabase) : GloamRepository
             response2 = entry.prompt2Response,
             prompt3 = "",
             response3 = entry.prompt3Response,
-            createdAt = entry.createdAt.toString()
+            createdAt = entry.createdAt.toString(),
+            updatedAt = entry.updatedAt.toString()
         )
         updateMoodRecord(entry.date)
-        return entryQueries.getEntry(entry.date.toString(), entry.entryType.name)
+        return queries.getEntry(entry.date.toString(), entry.entryType.name)
             .executeAsOneOrNull()?.id ?: 0L
     }
 
     override suspend fun updateEntry(entry: JournalEntry) {
-        entryQueries.updateEntry(
+        queries.updateEntry(
             moodScore = entry.moodScore.toLong(),
             response1 = entry.prompt1Response,
             response2 = entry.prompt2Response,
@@ -65,22 +71,24 @@ class GloamRepositoryImpl(private val database: GloamDatabase) : GloamRepository
     }
 
     override suspend fun deleteEntry(entry: JournalEntry) {
-        entryQueries.deleteEntry(entry.id)
+        queries.deleteEntry(entry.id)
         updateMoodRecord(entry.date)
     }
 
     // ── Mood records ──────────────────────────────────────────────────────────
 
-    override fun getAllMoodRecords(): Flow<List<MoodRecord>> = flow {
-        emit(moodQueries.getAllMoodRecords().executeAsList().map { it.toModel() })
-    }
+    override fun getAllMoodRecords(): Flow<List<MoodRecord>> =
+        queries.getAllMoodRecords().asFlow().mapToList(Dispatchers.IO).map { list ->
+            list.map { it.toModel() }
+        }
 
-    override fun getMoodRecordsInRange(start: LocalDate, end: LocalDate): Flow<List<MoodRecord>> = flow {
-        emit(moodQueries.getMoodRecordsInRange(start.toString(), end.toString()).executeAsList().map { it.toModel() })
-    }
+    override fun getMoodRecordsInRange(start: LocalDate, end: LocalDate): Flow<List<MoodRecord>> =
+        queries.getMoodRecordsInRange(start.toString(), end.toString()).asFlow().mapToList(Dispatchers.IO).map { list ->
+            list.map { it.toModel() }
+        }
 
     override suspend fun getMoodForDate(date: LocalDate): MoodRecord? =
-        moodQueries.getMoodForDate(date.toString()).executeAsOneOrNull()?.toModel()
+        queries.getMoodForDate(date.toString()).executeAsOneOrNull()?.toModel()
 
     private suspend fun updateMoodRecord(date: LocalDate) {
         val sunriseEntry = getEntry(date, EntryType.SUNRISE)
@@ -96,7 +104,7 @@ class GloamRepositoryImpl(private val database: GloamDatabase) : GloamRepository
             else -> return
         }
 
-        moodQueries.upsertMoodRecord(
+        queries.upsertMoodRecord(
             date = date.toString(),
             averageMood = average,
             sunriseMood = sunriseMood?.toLong(),
@@ -107,7 +115,7 @@ class GloamRepositoryImpl(private val database: GloamDatabase) : GloamRepository
     // ── Prompts ───────────────────────────────────────────────────────────────
 
     override suspend fun getPromptsForType(type: EntryType): List<Prompt> =
-        promptQueries.getPromptsForType(type.name).executeAsList().map { it.toModel() }
+        queries.getPromptsForType(type.name).executeAsList().map { it.toModel() }
 
     override suspend fun getRandomPromptsForEntry(type: EntryType): Triple<Prompt, Prompt, Prompt> {
         val prompts = getPromptsForType(type)
@@ -137,7 +145,7 @@ class GloamRepositoryImpl(private val database: GloamDatabase) : GloamRepository
     // ── Stats ─────────────────────────────────────────────────────────────────
 
     override suspend fun getAverageMoodInRange(start: LocalDate, end: LocalDate): Float? {
-        val records = moodQueries.getMoodRecordsInRange(start.toString(), end.toString()).executeAsList()
+        val records = queries.getMoodRecordsInRange(start.toString(), end.toString()).executeAsList()
         return if (records.isEmpty()) null else records.map { it.averageMood?.toFloat() ?: 0f }.average().toFloat()
     }
 
@@ -148,67 +156,50 @@ class GloamRepositoryImpl(private val database: GloamDatabase) : GloamRepository
     }
 }
 
+// ── Shared entry row mapper ────────────────────────────────────────────────────
+
+private fun mapToJournalEntry(
+    id: Long,
+    date: String,
+    entryType: String,
+    moodScore: Long,
+    response1: String,
+    response2: String,
+    response3: String,
+    createdAt: String,
+    updatedAt: String
+): JournalEntry {
+    val now = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
+    return JournalEntry(
+        id = id,
+        date = LocalDate.parse(date),
+        entryType = EntryType.valueOf(entryType),
+        moodScore = moodScore.toInt(),
+        prompt1Response = response1,
+        prompt2Response = response2,
+        prompt3Response = response3,
+        createdAt = runCatching { LocalDateTime.parse(createdAt) }.getOrDefault(now),
+        updatedAt = runCatching { LocalDateTime.parse(updatedAt) }.getOrDefault(now)
+    )
+}
+
 // ── Row mappers ───────────────────────────────────────────────────────────────
 
-private fun com.gloam.data.db.GetAllEntries.toModel(): JournalEntry {
-    val now = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
-    return JournalEntry(
-        id = id,
-        date = kotlinx.datetime.LocalDate.parse(date),
-        entryType = EntryType.valueOf(entryType),
-        moodScore = moodScore.toInt(),
-        prompt1Response = response1,
-        prompt2Response = response2,
-        prompt3Response = response3,
-        createdAt = runCatching { kotlinx.datetime.LocalDateTime.parse(createdAt) }.getOrDefault(now)
-    )
-}
+private fun com.gloam.data.db.GetAllEntries.toModel(): JournalEntry =
+    mapToJournalEntry(id, date, entryType, moodScore, response1, response2, response3, createdAt, updatedAt)
 
-private fun com.gloam.data.db.GetEntriesForDate.toModel(): JournalEntry {
-    val now = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
-    return JournalEntry(
-        id = id,
-        date = kotlinx.datetime.LocalDate.parse(date),
-        entryType = EntryType.valueOf(entryType),
-        moodScore = moodScore.toInt(),
-        prompt1Response = response1,
-        prompt2Response = response2,
-        prompt3Response = response3,
-        createdAt = runCatching { kotlinx.datetime.LocalDateTime.parse(createdAt) }.getOrDefault(now)
-    )
-}
+private fun com.gloam.data.db.GetEntriesForDate.toModel(): JournalEntry =
+    mapToJournalEntry(id, date, entryType, moodScore, response1, response2, response3, createdAt, updatedAt)
 
-private fun com.gloam.data.db.GetEntry.toModel(): JournalEntry {
-    val now = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
-    return JournalEntry(
-        id = id,
-        date = kotlinx.datetime.LocalDate.parse(date),
-        entryType = EntryType.valueOf(entryType),
-        moodScore = moodScore.toInt(),
-        prompt1Response = response1,
-        prompt2Response = response2,
-        prompt3Response = response3,
-        createdAt = runCatching { kotlinx.datetime.LocalDateTime.parse(createdAt) }.getOrDefault(now)
-    )
-}
+private fun com.gloam.data.db.GetEntry.toModel(): JournalEntry =
+    mapToJournalEntry(id, date, entryType, moodScore, response1, response2, response3, createdAt, updatedAt)
 
-private fun com.gloam.data.db.GetEntriesInRange.toModel(): JournalEntry {
-    val now = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
-    return JournalEntry(
-        id = id,
-        date = kotlinx.datetime.LocalDate.parse(date),
-        entryType = EntryType.valueOf(entryType),
-        moodScore = moodScore.toInt(),
-        prompt1Response = response1,
-        prompt2Response = response2,
-        prompt3Response = response3,
-        createdAt = runCatching { kotlinx.datetime.LocalDateTime.parse(createdAt) }.getOrDefault(now)
-    )
-}
+private fun com.gloam.data.db.GetEntriesInRange.toModel(): JournalEntry =
+    mapToJournalEntry(id, date, entryType, moodScore, response1, response2, response3, createdAt, updatedAt)
 
 private fun com.gloam.data.db.GetAllMoodRecords.toModel(): MoodRecord =
     MoodRecord(
-        date = kotlinx.datetime.LocalDate.parse(date),
+        date = LocalDate.parse(date),
         averageMood = averageMood?.toFloat() ?: 0f,
         sunriseMood = sunriseMood?.toInt(),
         sunsetMood = sunsetMood?.toInt()
@@ -216,7 +207,7 @@ private fun com.gloam.data.db.GetAllMoodRecords.toModel(): MoodRecord =
 
 private fun com.gloam.data.db.GetMoodRecordsInRange.toModel(): MoodRecord =
     MoodRecord(
-        date = kotlinx.datetime.LocalDate.parse(date),
+        date = LocalDate.parse(date),
         averageMood = averageMood?.toFloat() ?: 0f,
         sunriseMood = sunriseMood?.toInt(),
         sunsetMood = sunsetMood?.toInt()
@@ -224,7 +215,7 @@ private fun com.gloam.data.db.GetMoodRecordsInRange.toModel(): MoodRecord =
 
 private fun com.gloam.data.db.GetMoodForDate.toModel(): MoodRecord =
     MoodRecord(
-        date = kotlinx.datetime.LocalDate.parse(date),
+        date = LocalDate.parse(date),
         averageMood = averageMood?.toFloat() ?: 0f,
         sunriseMood = sunriseMood?.toInt(),
         sunsetMood = sunsetMood?.toInt()
