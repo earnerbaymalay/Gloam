@@ -78,19 +78,15 @@ kotlin {
                 implementation(libs.sqldelight.native.driver)
             }
         }
-        val iosX64Main by getting { dependsOn(iosMain) }
-        val iosArm64Main by getting { dependsOn(iosMain) }
-        val iosSimulatorArm64Main by getting { dependsOn(iosMain) }
         val desktopMain by getting {
             dependencies {
                 implementation(compose.desktop.currentOs)
                 implementation(libs.sqldelight.sqlite.driver)
-                implementation(libs.kotlinx.coroutines.core)
             }
         }
         val wasmJsMain by getting {
             dependencies {
-                implementation(libs.sqldelight.webWorkerDriver)
+                implementation(libs.sqldelight.web.worker.driver)
             }
         }
     }
@@ -124,7 +120,6 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
 
-    buildFeatures { compose = true }
 }
 
 sqldelight {
