@@ -13,3 +13,6 @@ local.properties
 *.aab
 *.jks
 *.keystore
+
+# Git worktrees
+.worktrees/

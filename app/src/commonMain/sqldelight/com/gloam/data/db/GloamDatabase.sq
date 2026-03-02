@@ -1,0 +1,74 @@
+CREATE TABLE IF NOT EXISTS JournalEntry (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    date TEXT NOT NULL,
+    entryType TEXT NOT NULL,
+    moodScore INTEGER NOT NULL,
+    prompt1 TEXT NOT NULL,
+    response1 TEXT NOT NULL,
+    prompt2 TEXT NOT NULL,
+    response2 TEXT NOT NULL,
+    prompt3 TEXT NOT NULL,
+    response3 TEXT NOT NULL,
+    createdAt TEXT NOT NULL,
+    updatedAt TEXT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS MoodRecord (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    date TEXT NOT NULL UNIQUE,
+    averageMood REAL,
+    sunriseMood INTEGER,
+    sunsetMood INTEGER
+);
+
+CREATE TABLE IF NOT EXISTS Prompt (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    entryType TEXT NOT NULL,
+    text TEXT NOT NULL,
+    category TEXT NOT NULL
+);
+
+-- JournalEntry queries
+getAllEntries:
+SELECT * FROM JournalEntry ORDER BY date DESC, entryType ASC;
+
+getEntriesForDate:
+SELECT * FROM JournalEntry WHERE date = :date;
+
+getEntry:
+SELECT * FROM JournalEntry WHERE date = :date AND entryType = :entryType LIMIT 1;
+
+getEntriesInRange:
+SELECT * FROM JournalEntry WHERE date >= :start AND date <= :end ORDER BY date DESC;
+
+insertEntry:
+INSERT INTO JournalEntry(date, entryType, moodScore, prompt1, response1, prompt2, response2, prompt3, response3, createdAt, updatedAt)
+VALUES (:date, :entryType, :moodScore, :prompt1, :response1, :prompt2, :response2, :prompt3, :response3, :createdAt, :updatedAt);
+
+updateEntry:
+UPDATE JournalEntry SET moodScore = :moodScore, response1 = :response1, response2 = :response2, response3 = :response3
+WHERE id = :id;
+
+deleteEntry:
+DELETE FROM JournalEntry WHERE id = :id;
+
+-- MoodRecord queries
+getAllMoodRecords:
+SELECT * FROM MoodRecord ORDER BY date DESC;
+
+getMoodRecordsInRange:
+SELECT * FROM MoodRecord WHERE date >= :start AND date <= :end;
+
+getMoodForDate:
+SELECT * FROM MoodRecord WHERE date = :date LIMIT 1;
+
+upsertMoodRecord:
+INSERT OR REPLACE INTO MoodRecord(date, averageMood, sunriseMood, sunsetMood)
+VALUES (:date, :averageMood, :sunriseMood, :sunsetMood);
+
+-- Prompt queries
+getPromptsForType:
+SELECT * FROM Prompt WHERE entryType = :entryType ORDER BY RANDOM() LIMIT 3;
+
+insertPrompt:
+INSERT INTO Prompt(entryType, text, category) VALUES (:entryType, :text, :category);
