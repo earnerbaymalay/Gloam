@@ -11,7 +11,9 @@ plugins {
 kotlin {
     androidTarget {
         compilations.all {
-            kotlinOptions { jvmTarget = "17" }
+            compilerOptions {
+                jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
+            }
         }
     }
 
@@ -71,8 +73,7 @@ kotlin {
                 implementation(libs.androidx.work.runtime)
             }
         }
-        val iosMain by creating {
-            dependsOn(commonMain)
+        val iosMain by getting {
             dependencies {
                 implementation(libs.sqldelight.native.driver)
             }
@@ -89,7 +90,7 @@ kotlin {
         }
         val wasmJsMain by getting {
             dependencies {
-                // Web worker driver added separately as it requires npm
+                implementation(libs.sqldelight.webWorkerDriver)
             }
         }
     }
