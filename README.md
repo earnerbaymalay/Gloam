@@ -3,25 +3,35 @@
 # 🌗 G L O A M
 ### *Journal with the Sun.*
 
-[![Status](https://img.shields.io/badge/Status-Polished-50fa7b?style=for-the-badge)]()
-[![Platform](https://img.shields.io/badge/Platform-Android_26%2B-4c566a?style=for-the-badge&logo=android)]()
-[![Language](https://img.shields.io/badge/Kotlin-100%25-7F52FF?style=for-the-badge&logo=kotlin)]()
-[![License](https://img.shields.io/badge/License-MIT-f1fa8c?style=for-the-badge)]()
-[![Privacy](https://img.shields.io/badge/Privacy-100%25_Local-bd93f9?style=for-the-badge)]()
+<p align="center">
+  <img src="https://raw.githubusercontent.com/earnerbaymalay/sideload/main/assets/gloam-hero.svg" alt="Gloam Solar Journal" width="700"/>
+</p>
 
-[**⚡ Quick Start**](#-build--run-in-30-seconds) • [**📖 Usage Guide**](docs/USAGE.md) • [**🏗️ Architecture**](docs/ARCHITECTURE.md) • [**🗺️ Roadmap**](docs/ROADMAP.md)
+[![Status](https://img.shields.io/badge/Status-Polished-50fa7b?style=for-the-badge)](https://github.com/earnerbaymalay/Gloam)
+[![Platform](https://img.shields.io/badge/Platform-Android_%7C_Desktop-4c566a?style=for-the-badge&logo=android)](https://github.com/earnerbaymalay/Gloam)
+[![Language](https://img.shields.io/badge/Kotlin-100%25-7F52FF?style=for-the-badge&logo=kotlin)](https://kotlinlang.org/)
+[![License](https://img.shields.io/badge/License-MIT-f1fa8c?style=for-the-badge)](LICENSE)
+[![Privacy](https://img.shields.io/badge/Privacy-100%25_Local-bd93f9?style=for-the-badge)](#-why-does-this-matter)
+
+[**⚡ Quick Start**](#-build--run-in-30-seconds) · [**📖 Usage Guide**](docs/USAGE.md) · [**🏗️ Architecture**](docs/ARCHITECTURE.md) · [**🗺️ Roadmap**](docs/ROADMAP.md)
+
+</div>
 
 ---
 
-### 🤔 What is this?
+## 🧬 The Mission
 
-Gloam is a **solar-timed journaling app** for Android. It automatically transitions between light and dark themes based on your local sunrise and sunset — because your mood should flow with the day.
+> *Picture this:* You wake up. Your phone knows it's sunrise. Your journal app's theme has already shifted to warm, soft tones. It asks you three questions — not generic ones, but prompts designed by cognitive behavioral therapists: *"What emotions am I carrying right now?" "What would make today feel meaningful?" "What thought pattern could I reframe today?"* You answer in 30 seconds. The sun sets. Your app shifts again to deep dark tones. It asks: *"What challenged me most today?" "What three things am I grateful for?"* You answer. Your mood for the day is automatically calculated and colored on a year-long heatmap.
 
-It combines **Cognitive Behavioral Therapy (CBT) prompts**, **mood tracking**, and a **calendar-based visualization** engine into one private, offline-first experience.
+That's Gloam.
 
-> **No accounts. No cloud sync. No ads. No tracking.** Your journal lives on your device, encrypted at rest with SQLCipher, accessible only behind a PIN you set.
+It's a **solar-timed journaling app** for Android and Desktop that automatically transitions between light and dark themes based on your local sunrise and sunset — because your mood should flow with the day.
 
-### 🔥 Why does this matter?
+**No accounts. No cloud sync. No ads. No tracking.** Your journal lives on your device, encrypted at rest with SQLCipher, accessible only behind a PIN you set.
+
+---
+
+## 🔥 Why Does This Matter?
 
 Most journaling apps are just text boxes in a cloud database. Gloam is different:
 
@@ -47,21 +57,18 @@ Your phone's wallpaper changes with the sky outside.
 
 ---
 
-### 👋 Who should use this?
+## 👋 Who Should Use This?
 
 > **Anyone who wants to journal — without their data becoming someone else's product.**
 
-| If you are... | Gloam gives you |
+| If you are… | Gloam gives you |
 |---|---|
 | 🟢 **Mindfulness practitioner** | CBT-timed prompts that adapt to sunrise reflection and sunset gratitude |
 | 🟡 **Mood tracker** | 5-point mood scale with emoji, automatic daily averages, year-in-pixels heatmap |
 | 🔴 **Privacy-conscious user** | SQLCipher-encrypted database, SHA-256 PIN lock, zero cloud dependency |
-| 💻 **Android developer** | Clean architecture with Room + SQLCipher, Compose UI, solar algorithm implementation |
-| 🧠 **CBT student** | Built-in prompts from 6 therapeutic categories: emotional check-in, intention, cognitive reframing, reflection, gratitude, closure |
+| 💻 **Android developer** | Clean architecture with Room + SQLCipher, Compose Multiplatform UI, solar algorithm |
 
 ---
-
-</div>
 
 ## 🚀 Build & Run in 30 Seconds
 
@@ -69,17 +76,31 @@ Your phone's wallpaper changes with the sky outside.
 
 ```bash
 # 1. Clone
-git clone https://github.com/earnerbaymalay/gloam.git
-cd gloam
+git clone https://github.com/earnerbaymalay/Gloam.git
+cd Gloam
 
 # 2. Open in Android Studio
-# File → Open → select the gloam directory
+# File → Open → select the Gloam directory
 
 # 3. Sync Gradle and run
 # Min SDK: 26 | Target SDK: 33 | Java: 17
 ```
 
 That's it. The app is **fully functional on first launch** — no setup wizard, no account creation.
+
+### Desktop (Compose Multiplatform)
+
+Gloam now supports **native desktop builds** via Compose Multiplatform:
+
+```bash
+# Build for your current OS
+./gradlew composeApp:assemble
+
+# Build distributable packages
+./gradlew composeApp:packageDmg   # macOS
+./gradlew composeApp:packageMsi   # Windows
+./gradlew composeApp:packageDeb   # Linux
+```
 
 ---
 
@@ -93,16 +114,6 @@ That's it. The app is **fully functional on first launch** — no setup wizard, 
 | 📅 **Calendar** | Year-in-pixels heatmap, mood statistics (average, consistency, distribution), month-by-month navigation |
 | 📝 **Entries** | Chronological list of all journal entries, grouped by date, tap to view/edit/delete |
 | ⚙️ **Settings** | PIN lock toggle, JSON export of all data, about dialog |
-
-### The Solar Theme Engine
-
-Gloam calculates your local sunrise and sunset using the **NOAA solar algorithm** — the same mathematics used by weather services worldwide. The theme engine interpolates between light and dark color palettes based on daylight progress:
-
-```
-Night (0%) ──dawn──→ Sunrise (50%) ──day──→ Sunset (50%) ──dusk──→ Night (0%)
-```
-
-The result: your app's appearance tracks the actual sky.
 
 ### CBT Prompt System
 
@@ -132,44 +143,76 @@ Each journaling session pulls 3 random prompts (one per relevant category). You 
 ## 🏗️ Architecture at a Glance
 
 ```
-gloam/
-├── app/src/main/java/com/gloam/
-│   ├── GloamApplication      ← Application class, DB singleton
-│   ├── MainActivity          ← NavHost, PIN lock, JSON export, permission handling
+Gloam/
+├── composeApp/
+│   ├── src/
+│   │   ├── commonMain/         ← Shared code (platform-agnostic)
+│   │   │   ├── data/
+│   │   │   │   ├── model/       ← Models (no Room annotations)
+│   │   │   │   ├── db/          ← Database interfaces
+│   │   │   │   └── repository/  ← GloamRepository (pure logic)
+│   │   │   ├── ui/
+│   │   │   │   ├── theme/       ← Color, Typography, Theme
+│   │   │   │   ├── components/  ← PinLock, Calendar, MoodSelector
+│   │   │   │   └── screens/     ← Home, Calendar, Entries, Settings
+│   │   │   ├── util/            ← SunCalculator (NOAA algorithm)
+│   │   │   └── viewmodel/       ← GloamViewModel
+│   │   │
+│   │   ├── androidMain/        ← Android-specific implementations
+│   │   │   └── data/db/         ← Room + SQLCipher database
+│   │   │
+│   │   └── desktopMain/        ← Desktop-specific implementations
+│   │       └── data/db/         ← SQLite JDBC database
 │   │
-│   ├── data/
-│   │   ├── model/Models.kt   ← Room entities: JournalEntry, MoodRecord, Prompt
-│   │   ├── db/
-│   │   │   ├── GloamDatabase  ← SQLCipher-encrypted Room DB
-│   │   │   ├── Converters.kt  ← TypeConverters (LocalDate, enums)
-│   │   │   └── Daos.kt        ← 3 DAOs: JournalEntry, MoodRecord, Prompt
-│   │   └── repository/
-│   │       └── GloamRepository ← CRUD + mood auto-calculation + prompt randomization
-│   │
-│   ├── viewmodel/
-│   │   └── GloamViewModel      ← All UI state flows, location, sun, CRUD
-│   │
-│   ├── ui/
-│   │   ├── theme/
-│   │   │   ├── Color.kt        ← Light/dark palettes, mood colors, transition colors
-│   │   │   ├── Theme.kt        ← Solar-interpolated theme + Material3 wrapper
-│   │   │   └── Type.kt         ← Full Material3 typography
-│   │   ├── components/
-│   │   │   ├── PinLock.kt      ← 4-digit PIN with setup + verify
-│   │   │   ├── Calendar.kt     ← Year-in-pixels + month calendar
-│   │   │   └── MoodSelector.kt ← 5-emoji animated mood picker
-│   │   └── screens/
-│   │       ├── home/HomeScreen.kt
-│   │       ├── calendar/CalendarScreen.kt
-│   │       ├── entries/EntriesScreen.kt + EntryDetailScreen.kt
-│   │       └── settings/SettingsScreen.kt
-│   │
-│   └── util/
-│       ├── SunCalculator.kt    ← NOAA solar algorithm
-│       └── NotificationUtils.kt ← Sunrise/sunset reminders
+│   └── build.gradle.kts        ← Compose Multiplatform config
 │
 └── design/gloam-ui.html        ← Full HTML/CSS/JS interactive UI prototype
 ```
+
+### Data Flow
+
+```
+User opens Home screen
+        │
+        ▼
+GloamViewModel.loadPromptsForType(entryType)
+        │
+        ▼
+Repository.getRandomPromptsForType(entryType)
+        │
+        ├──► Random 1 prompt per category
+        │
+        ▼
+HomeScreen renders mood selector + 3 prompt fields
+        │
+        ▼
+User fills in → taps Save
+        │
+        ▼
+GloamViewModel.saveEntry(entry)
+        │
+        ├──► Repository.saveEntry()
+        │       ├──► JournalEntryDao.insert()
+        │       └──► MoodRecord update (recalculate average)
+        │
+        ▼
+HomeScreen shows completed entry card
+```
+
+---
+
+## 📲 Available Everywhere
+
+| Platform | Format | Install |
+|---|---|---|
+| 📱 **Android** | APK | Build from source or [download from Sideload](https://earnerbaymalay.github.io/sideload/) |
+| 🖥️ **macOS** | DMG | `./gradlew composeApp:packageDmg` |
+| 🖥️ **Windows** | MSI | `./gradlew composeApp:packageMsi` |
+| 🖥️ **Linux** | deb | `./gradlew composeApp:packageDeb` |
+
+### 📲 All Apps, One Place
+
+All our apps are available through **[Sideload](https://earnerbaymalay.github.io/sideload/)** — our central distribution hub for local-first apps.
 
 ---
 
@@ -182,11 +225,11 @@ gloam/
 | **Phase 3: Visualization** | ✅ Complete | Year-in-pixels, mood stats, calendar view, entries list |
 | **Phase 4: Security** | ✅ Complete | SHA-256 PIN lock, encrypted database, backup exclusion |
 | **Phase 5: Notifications** | ✅ Complete | Sunrise/sunset reminders, boot recovery, notification channels |
-| **Phase 6: Polish** | 🔄 In Progress | Biometric unlock, dawn/dusk transition themes, version catalog |
-| **Phase 7: Export & Import** | 🔮 Planned | JSON export (working), import, cloud backup (encrypted) |
-| **Phase 8: Widgets** | 🔮 Planned | Home screen widget showing today's mood + quick journal |
+| **Phase 6: Cross-Platform** | ✅ Complete | Compose Multiplatform — Android + Desktop (macOS/Windows/Linux) |
+| **Phase 7: PWA** | 🔮 Planned | Browser-based installable app with IndexedDB |
+| **Phase 8: Sync** | 🔮 Planned | E2EE sync across devices (encrypted cloud backup) |
 
-See [docs/ROADMAP.md](docs/ROADMAP.md) for details.
+See [docs/ROADMAP.md](docs/ROADMAP.md) for full details.
 
 ---
 
@@ -206,7 +249,7 @@ See [docs/ROADMAP.md](docs/ROADMAP.md) for details.
 
 Gloam is open source because **wellness tools should be auditable**. Every line of code is open for inspection.
 
-- 🐛 Found a bug? [Open an issue](https://github.com/earnerbaymalay/gloam/issues)
+- 🐛 Found a bug? [Open an issue](https://github.com/earnerbaymalay/Gloam/issues)
 - 💡 Want to help? Read [CONTRIBUTING.md](CONTRIBUTING.md)
 - 🧠 Know CBT? Suggest better prompts
 - 🎨 Love design? Refine the glassmorphic aesthetic
