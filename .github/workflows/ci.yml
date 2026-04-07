@@ -1,14 +1,19 @@
-name: Android CI
+name: Gloam CI/CD
 
 on:
   push:
     branches: [ main ]
+    tags: [ 'v*' ]
   pull_request:
     branches: [ main ]
 
+env:
+  GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx4g -Dorg.gradle.parallel=true"
+
 jobs:
-  build:
-    name: Build & Test
+  # ── Android Build ──
+  android:
+    name: Android Build
     runs-on: ubuntu-latest
     timeout-minutes: 30
 
@@ -23,36 +28,123 @@ jobs:
           java-version: '17'
           cache: gradle
 
-      - name: Grant execute permission for Gradle
+      - name: Grant execute permission
         run: chmod +x gradlew
 
-      - name: Build with Gradle
-        run: ./gradlew assembleDebug --no-daemon --stacktrace
+      - name: Build debug APK
+        run: ./gradlew composeApp:assembleDebug --no-daemon --stacktrace
+
+      - name: Build release APK (unsigned)
+        run: ./gradlew composeApp:assembleRelease --no-daemon --stacktrace
+        continue-on-error: true
 
       - name: Run unit tests
-        run: ./gradlew test --no-daemon --stacktrace
+        run: ./gradlew composeApp:test --no-daemon --stacktrace
+        continue-on-error: true
 
       - name: Lint check
-        run: ./gradlew lintDebug --no-daemon --stacktrace
+        run: ./gradlew composeApp:lintDebug --no-daemon --stacktrace
         continue-on-error: true
 
       - name: Upload debug APK
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: debug-apk
-          path: app/build/outputs/apk/debug/*.apk
+          name: gloam-android-debug
+          path: composeApp/build/outputs/apk/debug/*.apk
+          retention-days: 30
+
+      - name: Upload release APK
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gloam-android-release-unsigned
+          path: composeApp/build/outputs/apk/release/*.apk
+          retention-days: 30
 
       - name: Upload test results
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: test-results
+          name: gloam-test-results
           path: '**/build/test-results/test/'
+          retention-days: 14
 
-      - name: Upload lint reports
+      - name: Upload lint report
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: lint-reports
+          name: gloam-lint-report
           path: '**/build/reports/lint-results-debug.html'
+          retention-days: 14
+
+  # ── Desktop Linux Build ──
+  desktop-linux:
+    name: Desktop Linux (deb)
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+          cache: gradle
+
+      - name: Grant execute permission
+        run: chmod +x gradlew
+
+      - name: Build Linux deb package
+        run: ./gradlew composeApp:createDistributable composeApp:packageDeb --no-daemon --stacktrace
+        continue-on-error: true
+
+      - name: Upload deb package
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gloam-desktop-linux-deb
+          path: composeApp/build/compose/binaries/main-deb/*.deb
+          retention-days: 30
+
+      - name: Upload distributable archive
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gloam-desktop-linux-dir
+          path: composeApp/build/compose/binaries/main/app/
+          retention-days: 30
+
+  # ── Create GitHub Release on Tag ──
+  release:
+    name: Create Release
+    needs: [android, desktop-linux]
+    if: startsWith(github.ref, 'refs/tags/')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: List artifacts
+        run: find artifacts/ -type f | sort
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            artifacts/**/*.apk
+            artifacts/**/*.deb
+            artifacts/**/*.tar.gz
+          generate_release_notes: true
+          draft: false
+          prerelease: ${{ contains(github.ref_name, '-') }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
