@@ -15,6 +15,8 @@
 
 [**⚡ Quick Start**](#-build--run-in-30-seconds) · [**📖 Usage Guide**](docs/USAGE.md) · [**🏗️ Architecture**](docs/ARCHITECTURE.md) · [**🗺️ Roadmap**](docs/ROADMAP.md)
 
+> 📲 **Install on any device — Android, Mac, Windows, or Linux — from one place:** [**sideload**](https://earnerbaymalay.github.io/sideload/)
+
 </div>
 
 ---
