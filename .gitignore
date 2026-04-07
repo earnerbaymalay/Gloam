@@ -9,7 +9,29 @@
 .cxx
 local.properties
 /app/build
+
+# Generated files
 *.apk
+*.ap_
 *.aab
+
+# Keystore files
 *.jks
 *.keystore
+
+# Log files
+*.log
+
+# Archives
+*.zip
+*.tar.gz
+
+# IDE
+.vscode/
+.vscode-test/
+
+# Dependency check
+dependency-check-report/
+
+# Gradle
+gradle-*-bin/
