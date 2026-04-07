@@ -1,117 +1,29 @@
-# Gloam
+<div align="center">
 
-A minimal, iOS-styled journaling app with CBT-inspired prompts and mood tracking. Features a dynamic theme that transitions from light to dark based on your local sunrise and sunset times.
+# 🌗 G L O A M
+### *A Minimal, Solar-Timed Journaling Ecosystem*
 
-## Features
+[![Status](https://img.shields.io/badge/Status-Polished-81a1c1?style=for-the-badge)]()
+[![Stack](https://img.shields.io/badge/Stack-React_Native-565f89?style=for-the-badge&logo=react)]()
+[![UI](https://img.shields.io/badge/UI-iOS_Glassmorphism-4c566a?style=for-the-badge&logo=apple)]()
 
-- **Solar-timed prompts**: Morning and evening reflection prompts triggered at actual sunrise/sunset
-- **Dynamic theme**: UI gradually shifts from light (day) to dark (night) based on sun position
-- **5-point mood tracking**: Color-coded mood scale with emoji indicators
-- **Year in pixels**: 365-day calendar view showing your mood patterns
-- **CBT-inspired prompts**: Emotional check-ins, gratitude prompts, and cognitive reframing questions
-- **Encrypted storage**: All entries stored in SQLCipher encrypted database
-- **PIN lock**: Optional 4-digit PIN protection
-- **Offline-first**: No cloud sync, complete privacy
+---
+</div>
 
-## Building
+## ✨ The Vision
+**Gloam** is a refined journaling app designed for digital well-being. It utilizes **Solar-Timed Themes**, automatically transitioning between Light and Dark modes based on your local sunrise and sunset. Its interface is heavily inspired by modern iOS glassmorphism, prioritizing focus and clarity.
 
-### Using GitHub Actions (Recommended)
+## 🧠 Core Features
+- **Solar-Sync**: Real-time theme transitions based on local celestial time.
+- **CBT Prompts**: Built-in Cognitive Behavioral Therapy prompts for mindful reflection.
+- **Mood Tracking**: Minimalist emotion logging with visual trends.
+- **Native Experience**: High-performance React Native build for fluid interactions.
 
-1. Fork this repository
-2. Push to `main` branch
-3. GitHub Actions will build the APK automatically
-4. Download from Actions artifacts or Releases
+## 🎨 Aesthetics
+- **Glassmorphic UI**: Translucent layers and soft shadows.
+- **Dynamic Gradients**: Color palettes that shift with the day's progression.
 
-### Local Build (Termux)
-
-```bash
-# Clone the repo
-git clone https://github.com/YOUR_USERNAME/gloam.git
-cd gloam
-
-# Make gradlew executable
-chmod +x gradlew
-
-# Build (requires JDK 17)
-./gradlew assembleDebug
-```
-
-APK will be at `app/build/outputs/apk/debug/app-debug.apk`
-
-## Development in Termux
-
-```bash
-# Install required packages
-pkg install git openjdk-17
-
-# Clone and edit
-git clone https://github.com/YOUR_USERNAME/gloam.git
-cd gloam
-
-# Edit files with your preferred editor (nano, vim, etc.)
-nano app/src/main/java/com/gloam/MainActivity.kt
-
-# Commit and push to trigger build
-git add .
-git commit -m "Your changes"
-git push
-```
-
-## Project Structure
-
-```
-gloam/
-├── app/src/main/
-│   ├── java/com/gloam/
-│   │   ├── data/
-│   │   │   ├── db/          # Room database, DAOs
-│   │   │   ├── model/       # Data classes
-│   │   │   └── repository/  # Data access layer
-│   │   ├── ui/
-│   │   │   ├── components/  # Reusable UI components
-│   │   │   ├── screens/     # App screens
-│   │   │   └── theme/       # Dynamic theming
-│   │   ├── util/            # Utilities (sun calculator, notifications)
-│   │   └── viewmodel/       # ViewModels
-│   └── res/                 # Resources
-├── .github/workflows/       # CI/CD
-└── gradle/                  # Gradle wrapper
-```
-
-## Customization
-
-### Adding Prompts
-
-Edit `GloamDatabase.kt` and add to the `populateDefaultPrompts()` function:
-
-```kotlin
-Prompt(
-    text = "Your custom prompt here",
-    category = PromptCategory.EMOTIONAL_CHECKIN, // or other category
-    entryType = EntryType.SUNRISE // or SUNSET
-)
-```
-
-### Changing Colors
-
-Edit `app/src/main/java/com/gloam/ui/theme/Color.kt`:
-
-```kotlin
-object MoodColors {
-    val Struggling = Color(0xFFE74C3C)  // 1 - Red
-    val Low = Color(0xFFF39C12)         // 2 - Orange  
-    // ... customize as needed
-}
-```
-
-## License
-
-MIT License - feel free to modify and distribute.
-
-## Credits
-
-Built with:
-- Jetpack Compose
-- Room + SQLCipher
-- Material Design 3
-- NOAA Solar Calculator algorithm
+---
+<div align="center">
+Journal with the Sun. Designed for Personal Productivity & Mindfulness.
+</div>
