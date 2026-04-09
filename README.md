@@ -1,53 +1,55 @@
 # Gloam
 
-Solar-timed journaling with CBT prompts and mood tracking. Themes shift from light to dark based on your local sunrise and sunset.
+Solar-timed journaling with CBT prompts and mood tracking. Its themes adapt from light to dark based on your local sunrise and sunset.
 
 [![Status](https://img.shields.io/badge/Status-Polished-50fa7b?style=for-the-badge)]()
 [![Platform](https://img.shields.io/badge/Platform-Android_%7C_Desktop-4c566a?style=for-the-badge&logo=android)]()
 [![Kotlin](https://img.shields.io/badge/Kotlin-100%25-7F52FF?style=for-the-badge&logo=kotlin)]()
 [![License](https://img.shields.io/badge/license-MIT-f1fa8c?style=for-the-badge)](LICENSE)
 
-[Quick Start](#build-and-run) · [Usage Guide](docs/USAGE.md) · [Architecture](docs/ARCHITECTURE.md) · [Roadmap](docs/ROADMAP.md)
+[Quick start](#build-and-run) · [Usage guide](docs/USAGE.md) · [Architecture](docs/ARCHITECTURE.md) · [Roadmap](docs/ROADMAP.md)
 
 ---
 
-## What It Does
+## Functions
 
-Gloam uses a NOAA solar calculator to determine exact sunrise and sunset times for your location. The interface transitions through warm morning tones, bright daytime themes, golden sunset colors, and deep dark night themes. Each transition brings contextually timed CBT prompts from a pool of 18 prompts across 6 categories.
+Gloam uses a NOAA solar calculator to determine precise sunrise and sunset times for your location. The interface transitions through morning, daytime, sunset, and nighttime themes. Each transition introduces contextually timed CBT prompts selected from a pool of 18 prompts across 6 categories.
 
-You select your mood on a 5-point scale. Gloam tracks daily averages and displays a year-in-pixels heatmap. All data is encrypted with SQLCipher and locked behind a PIN.
+You select your mood on a 5-point scale. Gloam tracks daily averages and displays a year-in-pixels heatmap. All data is encrypted with SQLCipher and secured with a PIN.
 
-## Build and Run
+---
 
-Android Studio Arctic Fox or later, JDK 17, Android SDK 26-33.
+## Features
+
+-   **Four screens:** Home (journal with mood selector and CBT prompts), Calendar (year-in-pixels heatmap, mood statistics), Entries (chronological list), Settings (PIN lock, JSON export).
+-   **CBT prompts:** 18 prompts across 6 categories. Each session provides 3 random prompts to prevent repetition.
+-   **Mood tracking:** A 5-point scale with emoji, daily averages, a year-in-pixels heatmap, and consistency percentage.
+-   **Solar themes:** Uses a NOAA calculator for your location to automatically shift themes throughout the day.
+-   **Security:** SQLCipher-encrypted database, SHA-256 PIN lock, and no cloud dependency.
+
+---
+
+## Build and run
+
+Requires Android Studio Arctic Fox or later, JDK 17, and Android SDK 26-33.
 
 ```bash
 git clone https://github.com/earnerbaymalay/Gloam.git
 cd Gloam
 ```
 
-Open in Android Studio, sync Gradle, run. Min SDK 26, target SDK 33.
+Open the project in Android Studio, sync Gradle, then run. Minimum SDK is 26, target SDK is 33.
 
 ### Desktop (Compose Multiplatform)
 
 ```bash
-./gradlew composeApp:assemble          # Build for current OS
-./gradlew composeApp:packageDmg        # macOS
-./gradlew composeApp:packageMsi        # Windows
-./gradlew composeApp:packageDeb        # Linux
+./gradlew composeApp:assemble         # Builds for the current OS
+./gradlew composeApp:packageDmg       # Packages for macOS
+./gradlew composeApp:packageMsi       # Packages for Windows
+./gradlew composeApp:packageDeb       # Packages for Linux
 ```
 
-## Features
-
-**Four screens:** Home (journal with mood selector and CBT prompts), Calendar (year-in-pixels heatmap, mood statistics), Entries (chronological list), Settings (PIN lock, JSON export).
-
-**CBT prompts:** 18 prompts across 6 categories. Each session pulls 3 random prompts so you never get the same combination twice in a row.
-
-**Mood tracking:** 5-point scale with emoji, daily averages, year-in-pixels heatmap, consistency percentage.
-
-**Solar themes:** NOAA calculator for your location. Themes shift automatically throughout the day.
-
-**Security:** SQLCipher-encrypted database, SHA-256 PIN lock, zero cloud dependency.
+---
 
 ## Roadmap
 

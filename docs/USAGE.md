@@ -1,165 +1,160 @@
-# 🌗 Gloam Usage Guide
-### *Your Complete Guide to Solar-Timed Journaling*
+# Gloam usage guide
+
+Your complete guide to solar-timed journaling.
 
 ---
 
-## First Launch
+## First launch
 
 ### Installation
+
 ```bash
 git clone https://github.com/earnerbaymalay/gloam.git
 cd gloam
 # Open in Android Studio → Run
 ```
 
-Or download the latest APK from [GitHub Releases](https://github.com/earnerbaymalay/gloam/releases).
+Alternatively, download the latest APK from [GitHub Releases](https://github.com/earnerbaymalay/gloam/releases).
 
-### First Run
-1. **Location permission** — Gloam asks for location to calculate your local sunrise/sunset. Grant it for accurate sun times, or deny it and it defaults to Sydney, Australia.
-2. **That's it.** No account, no setup wizard, no onboarding screens. You're at the Home screen.
+### Initial setup
+
+1.  **Location permission:** Gloam requests location access to accurately calculate local sunrise and sunset times. Granting permission ensures precise sun times; otherwise, it defaults to Sydney, Australia.
+2.  **Ready to use:** No account registration, setup wizard, or onboarding screens are required. You will be directed to the Home screen immediately.
 
 ---
 
 ## Journaling
 
-### Writing an Entry
+### Writing an entry
 
-1. **Open the Home screen** — you'll see today's sun times and current time
-2. **The mood selector** — tap an emoji from 😞 😐 🙂 😄 😊
-3. **Three CBT prompts appear** — they're randomly selected based on whether it's sunrise or sunset
-4. **Write your responses** — tap each prompt field and type
-5. **Tap Save** — your entry is encrypted and stored
+1.  **Home screen:** Navigate to the Home screen, where today's sun times and the current time are displayed.
+2.  **Mood selector:** Tap an emoji from the scale: 😞 😐 🙂 😄 😊.
+3.  **CBT prompts:** Three prompts appear, selected randomly based on the current solar position (sunrise or sunset).
+4.  **Responses:** Tap each prompt field to enter your thoughts.
+5.  **Save:** Tap 'Save' to encrypt and store your entry.
 
-### Sunrise vs Sunset Entries
+### Sunrise vs. sunset entries
 
-Gloam automatically determines which type of entry to show based on the solar position:
+Gloam automatically adjusts the entry prompts based on the solar position:
 
-- **Before solar noon** → Sunrise entry (prompts about intention, emotional check-in, cognitive reframing)
-- **After solar noon** → Sunset entry (prompts about reflection, gratitude, closure)
+-   **Before solar noon:** Sunrise entries focus on intention, emotional check-ins, and cognitive reframing.
+-   **After solar noon:** Sunset entries focus on reflection, gratitude, and closure.
 
-You can write both a sunrise and sunset entry each day.
+You can create both a sunrise and a sunset entry each day.
 
-### Editing an Entry
+### Editing an entry
 
-1. Go to **Entries** screen (bottom nav)
-2. Tap any entry
-3. Tap **Edit**
-4. Modify mood or responses
-5. Tap **Save**
+1.  Go to the 'Entries' screen (via the bottom navigation bar).
+2.  Tap on the entry you wish to modify.
+3.  Tap 'Edit'.
+4.  Adjust your mood selection or responses.
+5.  Tap 'Save'.
 
-### Deleting an Entry
+### Deleting an entry
 
-1. Open the entry detail screen
-2. Tap **Delete** (trash icon in top bar)
-3. Confirm deletion
+1.  Open the entry detail screen.
+2.  Tap the 'Delete' icon (trash icon in the top bar).
+3.  Confirm the deletion.
 
 ---
 
-## Mood Tracking
+## Mood tracking
 
-### The Mood Scale
+### The mood scale
 
 | Emoji | Label | Score |
-|---|---|---|
-| 😞 | Rough | 1 |
-| 😐 | Meh | 2 |
-| 🙂 | Okay | 3 |
-| 😄 | Good | 4 |
-| 😊 | Great | 5 |
+|-------|-------|-------|
+| 😞     | Rough | 1     |
+| 😐     | Meh   | 2     |
+| 🙂     | Okay  | 3     |
+| 😄     | Good  | 4     |
+| 😊     | Great | 5     |
 
-### Daily Average
+### Daily average
 
-When you write both a sunrise and sunset entry, Gloam automatically calculates your daily average mood. This appears in:
-- **Calendar screen** — mood statistics section
-- **Year-in-pixels** — each day colored by average mood
-- **Entries screen** — both entries show their individual moods
+When you complete both a sunrise and a sunset entry, Gloam automatically calculates your daily average mood. This average is displayed in:
 
-### Year in Pixels
+-   The 'Calendar' screen (mood statistics section).
+-   The 'Year-in-pixels' heatmap, where each day is colored by its average mood.
+-   The 'Entries' screen, showing individual moods for each entry.
 
-The calendar screen shows a 12 × 31 grid where each cell represents a day:
-- **Green** = great mood (5)
-- **Teal** = good (4)
-- **Gray** = okay (3)
-- **Orange** = meh (2)
-- **Red** = rough (1)
-- **Empty** = no entry that day
+### Year in pixels
 
-Tap any cell to see that day's entries.
+The 'Calendar' screen presents a 12 × 31 grid, with each cell representing a day:
+
+-   **Green:** Excellent mood (5)
+-   **Teal:** Good mood (4)
+-   **Gray:** Okay mood (3)
+-   **Orange:** Meh mood (2)
+-   **Red:** Rough mood (1)
+-   **Empty:** No entry for that day
+
+Tap any cell to view entries for that specific day.
 
 ---
 
-## PIN Lock
+## PIN lock
 
 ### Setting a PIN
 
-1. Go to **Settings** screen
-2. Toggle **PIN Lock** on
-3. Enter a 4-digit PIN
-4. Confirm the same PIN
-5. Done — next time you open Gloam, you'll need the PIN
+1.  Go to the 'Settings' screen.
+2.  Toggle 'PIN Lock' on.
+3.  Enter a 4-digit PIN.
+4.  Confirm the PIN.
+5.  The PIN lock is active; you will need to enter it the next time you open Gloam.
 
-### Changing Your PIN
+### Changing your PIN
 
-1. Go to **Settings**
-2. Toggle PIN off, then on again
-3. Enter your new PIN
+1.  Go to 'Settings'.
+2.  Toggle 'PIN Lock' off, then on again.
+3.  Enter your new PIN.
 
-### Forgot Your PIN
+### Forgot your PIN
 
-Unfortunately, the PIN is SHA-256 hashed and cannot be recovered. To reset:
-1. Uninstall and reinstall Gloam
-2. **Warning:** This deletes all your journal data
+The PIN is SHA-256 hashed and cannot be recovered. To reset:
+
+1.  Uninstall and reinstall Gloam.
+2.  **Warning:** This action will permanently delete all your journal data.
 
 ---
 
-## Exporting Your Data
+## Exporting your data
 
-1. Go to **Settings**
-2. Tap **Export Journal (JSON)**
-3. The JSON file contains all your entries, mood records, and prompts
-4. Share it via Android's share sheet (email, Drive, etc.)
+1.  Go to 'Settings'.
+2.  Tap 'Export Journal (JSON)'.
+3.  The JSON file contains all your entries, mood records, and prompts.
+4.  Share the file via Android's share sheet (e.g., email, Drive).
 
-**Note:** Exported data is plaintext. Keep it secure.
+**Note:** Exported data is in plaintext; ensure it is stored securely.
 
 ---
 
 ## Notifications
 
-Gloam can remind you to journal at sunrise and sunset:
+Gloam can provide reminders to journal at sunrise and sunset:
 
-1. Go to **Settings** → enable notifications (via Android notification permissions)
-2. Gloam schedules alarms based on your calculated sun times
-3. On boot, alarms are automatically rescheduled
-4. Tap a notification → opens Gloam to the appropriate entry type
+1.  Go to 'Settings' and enable notifications (requires Android notification permissions).
+2.  Gloam schedules alarms based on your calculated sun times.
+3.  Alarms are automatically rescheduled upon device boot.
+4.  Tapping a notification opens Gloam to the appropriate entry type.
 
 ---
 
 ## Troubleshooting
 
-| Problem | Solution |
-|---|---|
-| Sun times are wrong | Grant location permission for accurate GPS-based calculation |
-| App asks for PIN I forgot | Uninstall/reinstall (data will be lost) — or clear app data |
-| No prompts showing | Check that default prompts were seeded (reinstall if needed) |
-| JSON export fails | Ensure storage permission is granted |
-| Notifications don't fire | Check Android notification permissions and exact alarm permission |
-| Theme doesn't change | Theme transitions are gradual — you may need to wait for significant daylight change |
+See the separate `TROUBLESHOOTING.md` for common issues and solutions.
 
 ---
 
 ## Privacy
 
-- **No internet required** — Gloam works 100% offline
-- **No accounts** — nothing to register, no password to forget
-- **No cloud** — your journal never leaves your device (except when you export)
-- **No analytics** — no tracking, no crash reporting, no telemetry
-- **Encrypted at rest** — SQLCipher protects your database
-- **Backup excluded** — Android backup, cloud backup, and device transfer all exclude Gloam data
+-   **Offline operation:** Gloam functions entirely offline; no internet connection is required.
+-   **No accounts:** No registration or passwords needed.
+-   **No cloud storage:** Your journal data remains exclusively on your device, unless you choose to export it.
+-   **No analytics:** No tracking, crash reporting, or telemetry data is collected.
+-   **Encrypted data:** SQLCipher protects your database at rest.
+-   **Backup exclusion:** Gloam data is excluded from Android backup, cloud backup, and device transfer processes.
 
 ---
 
-<div align="center">
-
-*The sun rises. Your journal follows.*
-
-</div>
+[MIT License](LICENSE)
