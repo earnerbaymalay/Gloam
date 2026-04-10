@@ -1,5 +1,6 @@
 package com.gloam.data.db
 
+import com.gloam.data.repository.GloamRepository
 import android.content.Context
 import androidx.room.*
 import androidx.room.Room

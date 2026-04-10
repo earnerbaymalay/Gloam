@@ -1,5 +1,6 @@
 package com.gloam.data.db
 
+import com.gloam.data.repository.GloamRepository
 import com.gloam.data.model.*
 import kotlinx.coroutines.flow.*
 import kotlinx.datetime.*
