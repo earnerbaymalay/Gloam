@@ -1,6 +1,9 @@
-# Gloam troubleshooting guide
+<div align="center">
 
-Common issues and solutions.
+# ⬡ G L O A M
+### *Troubleshooting & Support.*
+
+</div>
 
 ---
 

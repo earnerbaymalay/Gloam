@@ -1,13 +1,15 @@
-# Gloam
+<div align="center">
 
-Solar-timed journaling with CBT prompts and mood tracking. Its themes adapt from light to dark based on your local sunrise and sunset.
+# ⬡ G L O A M
+### *Solar-Timed Journaling for Android & Desktop.*
 
 [![Status](https://img.shields.io/badge/Status-Polished-50fa7b?style=for-the-badge)]()
 [![Platform](https://img.shields.io/badge/Platform-Android_%7C_Desktop-4c566a?style=for-the-badge&logo=android)]()
-[![Kotlin](https://img.shields.io/badge/Kotlin-100%25-7F52FF?style=for-the-badge&logo=kotlin)]()
 [![License](https://img.shields.io/badge/license-MIT-f1fa8c?style=for-the-badge)](LICENSE)
 
-[Quick start](#build-and-run) · [Usage guide](docs/USAGE.md) · [Architecture](docs/ARCHITECTURE.md) · [Roadmap](docs/ROADMAP.md)
+**[📲 Download APK](https://github.com/earnerbaymalay/Gloam/releases/latest/download/gloam.apk)**
+
+</div>
 
 ---
 

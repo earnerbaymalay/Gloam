@@ -1,6 +1,9 @@
-# Gloam usage guide
+<div align="center">
 
-Your complete guide to solar-timed journaling.
+# ⬡ G L O A M
+### *Usage Guide & Solar-Timed Journaling.*
+
+</div>
 
 ---
 
