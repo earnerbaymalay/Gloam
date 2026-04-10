@@ -228,25 +228,20 @@ abstract class AndroidGloamDatabase : RoomDatabase() {
 class DatabaseCallback(private val context: Context) : RoomDatabase.Callback() {
     override fun onCreate(db: SupportSQLiteDatabase) {
         super.onCreate(db)
-        val database = AndroidGloamDatabase.getDatabase(context)
-        val promptDao = database.promptDao()
-
-        // Seed default CBT prompts
+        // Seed default CBT prompts directly via SQL (no recursive getDatabase call)
         val defaultPrompts = listOf(
-            // Sunrise
-            PromptEntity("s1", "What emotions am I carrying right now?", "EMOTIONAL_CHECKIN", "SUNRISE", true),
-            PromptEntity("s2", "What would make today feel meaningful?", "INTENTION", "SUNRISE", true),
-            PromptEntity("s3", "What thought pattern could I reframe today?", "CBT_REFRAME", "SUNRISE", true),
-            // Sunset
-            PromptEntity("s4", "What challenged me most today?", "REFLECTION", "SUNSET", true),
-            PromptEntity("s5", "What three things am I grateful for?", "GRATITUDE", "SUNSET", true),
-            PromptEntity("s6", "How can I release today's tension before sleep?", "CBT_CLOSURE", "SUNSET", true),
+            arrayOf("s1", "What emotions am I carrying right now?", "EMOTIONAL_CHECKIN", "SUNRISE", 1),
+            arrayOf("s2", "What would make today feel meaningful?", "INTENTION", "SUNRISE", 1),
+            arrayOf("s3", "What thought pattern could I reframe today?", "CBT_REFRAME", "SUNRISE", 1),
+            arrayOf("s4", "What challenged me most today?", "REFLECTION", "SUNSET", 1),
+            arrayOf("s5", "What three things am I grateful for?", "GRATITUDE", "SUNSET", 1),
+            arrayOf("s6", "How can I release today's tension before sleep?", "CBT_CLOSURE", "SUNSET", 1),
         )
-        // Add more prompts...
-        kotlinx.coroutines.runBlocking {
-            if (promptDao.getCount() == 0) {
-                promptDao.insertAll(defaultPrompts)
-            }
+        for (p in defaultPrompts) {
+            db.execSQL(
+                "INSERT OR IGNORE INTO prompts (id, text, category, entry_type, is_active) VALUES (?,?,?,?,?)",
+                arrayOf(p[0], p[1], p[2], p[3], p[4])
+            )
         }
     }
 }
