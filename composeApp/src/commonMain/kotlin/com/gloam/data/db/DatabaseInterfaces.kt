@@ -1,6 +1,7 @@
 package com.gloam.data.db
 
 import com.gloam.data.model.*
+import com.gloam.data.repository.GloamRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
@@ -13,6 +14,7 @@ interface GloamDatabase {
     val journalEntryDao: JournalEntryDao
     val moodRecordDao: MoodRecordDao
     val promptDao: PromptDao
+    val repository: GloamRepository
 
     suspend fun close()
 }

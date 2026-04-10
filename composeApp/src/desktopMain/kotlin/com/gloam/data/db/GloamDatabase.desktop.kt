@@ -10,6 +10,7 @@ import java.sql.*
  * Uses sqlite-jdbc for cross-platform SQLite access.
  */
 class DesktopGloamDatabase(dbPath: String) : GloamDatabase {
+    override val repository = GloamRepository(this)
 
     private val dbUrl = "jdbc:sqlite:$dbPath"
     private var connection: Connection? = null

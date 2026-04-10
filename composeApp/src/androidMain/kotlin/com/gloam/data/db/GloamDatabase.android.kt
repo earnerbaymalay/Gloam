@@ -315,6 +315,7 @@ class AndroidGloamDatabaseAdapter(private val db: AndroidGloamDatabase) : GloamD
     private val _journalEntryDao = AndroidJournalEntryDao(db.journalEntryDao())
     private val _moodRecordDao = AndroidMoodRecordDao(db.moodRecordDao())
     private val _promptDao = AndroidPromptDao(db.promptDao())
+    override val repository = GloamRepository(this)
 
     override val journalEntryDao: JournalEntryDao get() = _journalEntryDao
     override val moodRecordDao: MoodRecordDao get() = _moodRecordDao
