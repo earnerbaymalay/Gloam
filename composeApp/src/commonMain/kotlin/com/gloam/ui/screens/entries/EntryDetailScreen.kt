@@ -65,7 +65,7 @@ fun EntryDetailScreen(
             TopAppBar(
                 title = {
                     Text(
-                        text = entry.date.format(DateTimeFormatter.ofPattern("MMM d, yyyy"))
+                        text = entry.date.formatShortDate()
                     )
                 },
                 navigationIcon = {
@@ -125,9 +125,7 @@ fun EntryDetailScreen(
                                 style = MaterialTheme.typography.titleMedium
                             )
                             Text(
-                                text = entry.createdAt.format(
-                                    DateTimeFormatter.ofPattern("h:mm a")
-                                ),
+                                text = entry.createdAt.formatTime(),
                                 style = MaterialTheme.typography.bodySmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
