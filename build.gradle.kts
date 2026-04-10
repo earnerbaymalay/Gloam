@@ -4,3 +4,7 @@ plugins {
     alias(libs.plugins.jetbrainsCompose) apply false
     alias(libs.plugins.compose.compiler) apply false
 }
+
+tasks.register("clean", Delete::class) {
+    delete(layout.buildDirectory)
+}

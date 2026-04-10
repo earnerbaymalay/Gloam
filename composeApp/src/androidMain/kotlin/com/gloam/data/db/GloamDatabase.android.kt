@@ -178,50 +178,23 @@ abstract class AndroidGloamDatabase : RoomDatabase() {
 
     companion object {
         private const val DB_NAME = "gloam.db"
-        private const val PASSPHRASE_PREF = "gloam_db_passphrase"
-        private var INSTANCE: AndroidGloamDatabase? = null
+        @Volatile private var INSTANCE: AndroidGloamDatabase? = null
 
-        fun getDatabase(context: Context): AndroidGloamDatabase {
-            return INSTANCE ?: synchronized(this) {
-                INSTANCE ?: buildDatabase(context).also { INSTANCE = it }
-            }
-        }
-
-        private fun buildDatabase(context: Context): AndroidGloamDatabase {
-            val passphrase = getOrCreatePassphrase(context)
-            val passphraseBytes = passphrase.toByteArray(Charsets.UTF_8)
-
-            return try {
-                val factory = SupportFactory(passphraseBytes)
-                Room.databaseBuilder(
-                    context.applicationContext,
-                    AndroidGloamDatabase::class.java,
-                    DB_NAME
-                )
+        fun getDatabase(context: Context, passphrase: ByteArray): AndroidGloamDatabase =
+            INSTANCE ?: synchronized(this) {
+                INSTANCE ?: run {
+                    val factory = SupportFactory(passphrase)
+                    Room.databaseBuilder(
+                        context.applicationContext,
+                        AndroidGloamDatabase::class.java,
+                        DB_NAME
+                    )
                     .openHelperFactory(factory)
-                    .addCallback(DatabaseCallback(context))
+                    .addCallback(DatabaseCallback(context.applicationContext))
                     .build()
-            } finally {
-                passphraseBytes.fill(0.toByte())
+                    .also { INSTANCE = it }
+                }
             }
-        }
-
-        private fun getOrCreatePassphrase(context: Context): String {
-            val prefs = context.getSharedPreferences("gloam_prefs", Context.MODE_PRIVATE)
-            var passphrase = prefs.getString(PASSPHRASE_PREF, null)
-            if (passphrase.isNullOrEmpty()) {
-                passphrase = generateSecureKey()
-                prefs.edit().putString(PASSPHRASE_PREF, passphrase).apply()
-            }
-            return passphrase
-        }
-
-        private fun generateSecureKey(): String {
-            val random = SecureRandom()
-            val bytes = ByteArray(32)
-            random.nextBytes(bytes)
-            return bytes.joinToString("") { "%02x".format(it) }
-        }
     }
 }
 

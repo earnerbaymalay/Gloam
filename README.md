@@ -46,7 +46,7 @@ git clone https://github.com/earnerbaymalay/Gloam.git
 cd Gloam
 ```
 
-Open in Android Studio → Sync Gradle → Run (Minimum SDK 26, Target SDK 34, JDK 17 required).
+The Android app is the `composeApp` module. Open in Android Studio → Sync Gradle → select the `composeApp` run configuration → Run (Minimum SDK 26, Target SDK 34, JDK 17 required).
 
 ---
 
@@ -107,7 +107,7 @@ git clone https://github.com/earnerbaymalay/Gloam.git
 cd Gloam
 ```
 
-Open in Android Studio, sync Gradle, then run. Minimum SDK is 26, target SDK is 34.
+The Android app is the `composeApp` module. Open in Android Studio, sync Gradle, select the `composeApp` run configuration, then run. Minimum SDK is 26, target SDK is 34.
 
 ### Desktop (Compose Multiplatform)
 
