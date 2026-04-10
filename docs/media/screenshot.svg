@@ -1,0 +1,194 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="420" viewBox="0 0 720 420">
+  <style>
+    .bg { fill: #0d1117; }
+    .phone { fill: #161b22; stroke: #30363d; stroke-width: 1; }
+    .screen { fill: #0D1117; }
+    .white { fill: #e6edf3; font-family: sans-serif; }
+    .dim { fill: #8b949e; font-family: sans-serif; }
+    .amber { fill: #F59E0B; }
+    .purple { fill: #8B5CF6; }
+    .green { fill: #22C55E; }
+    .teal { fill: #14B8A6; }
+    .red { fill: #EF4444; }
+    .orange { fill: #F97316; }
+  </style>
+
+  <!-- Background -->
+  <rect width="720" height="420" class="bg" rx="16"/>
+  <text x="360" y="32" text-anchor="middle" fill="#F59E0B" font-family="monospace" font-size="13" font-weight="600">🌗 Gloam — App Screenshots</text>
+  <text x="360" y="48" text-anchor="middle" fill="#8b949e" font-family="sans-serif" font-size="11">Solar-timed CBT journaling · Mood tracking · Year-in-pixels heatmap</text>
+
+  <!-- Phone 1: Home Screen (Journal) -->
+  <g transform="translate(40, 70)">
+    <rect x="0" y="0" width="200" height="330" rx="20" class="phone"/>
+    <rect x="6" y="6" width="188" height="318" rx="16" fill="#0D1117"/>
+
+    <!-- Status bar -->
+    <text x="100" y="24" text-anchor="middle" fill="#e6edf3" font-family="sans-serif" font-size="10" font-weight="600">9:41</text>
+
+    <!-- Solar header -->
+    <text x="100" y="52" text-anchor="middle" fill="#F59E0B" font-family="sans-serif" font-size="9">☀️ Sunrise 6:32 → Sunset 17:45</text>
+    <text x="100" y="68" text-anchor="middle" fill="#e6edf3" font-family="sans-serif" font-size="10" font-style="italic">Good morning</text>
+    <text x="100" y="82" text-anchor="middle" fill="#e6edf3" font-family="sans-serif" font-size="14" font-weight="300" font-style="italic">Monday, March 1</text>
+
+    <!-- Mood selector -->
+    <text x="20" y="104" fill="#8b949e" font-family="sans-serif" font-size="8">How are you feeling?</text>
+    <text x="30" y="120" font-size="16">😞</text>
+    <text x="56" y="120" font-size="16">😐</text>
+    <text x="82" y="120" font-size="16">🙂</text>
+    <circle cx="108" cy="115" r="14" fill="#F59E0B" opacity="0.2"/>
+    <text x="108" y="120" font-size="16">😄</text>
+    <text x="134" y="120" font-size="16">😊</text>
+
+    <!-- Prompt cards -->
+    <rect x="12" y="132" width="176" height="42" rx="8" fill="#161b22" stroke="#F59E0B" stroke-width="0.5"/>
+    <text x="20" y="146" fill="#F59E0B" font-family="sans-serif" font-size="7" font-weight="600">INTENTION</text>
+    <text x="20" y="158" fill="#8b949e" font-family="sans-serif" font-size="7" font-style="italic">"What intention will you set today?"</text>
+    <rect x="20" y="164" width="160" height="4" rx="2" fill="#2A3145"/>
+
+    <rect x="12" y="180" width="176" height="42" rx="8" fill="#161b22" stroke="#2A3145" stroke-width="0.5"/>
+    <text x="20" y="194" fill="#F59E0B" font-family="sans-serif" font-size="7" font-weight="600">EMOTIONAL CHECK-IN</text>
+    <text x="20" y="206" fill="#8b949e" font-family="sans-serif" font-size="7" font-style="italic">"What emotion is strongest right now?"</text>
+    <rect x="20" y="212" width="160" height="4" rx="2" fill="#2A3145"/>
+
+    <rect x="12" y="228" width="176" height="42" rx="8" fill="#161b22" stroke="#2A3145" stroke-width="0.5"/>
+    <text x="20" y="242" fill="#F59E0B" font-family="sans-serif" font-size="7" font-weight="600">COGNITIVE REFRAME</text>
+    <text x="20" y="254" fill="#8b949e" font-family="sans-serif" font-size="7" font-style="italic">"What's a more helpful perspective?"</text>
+    <rect x="20" y="260" width="160" height="4" rx="2" fill="#2A3145"/>
+
+    <!-- Save button -->
+    <rect x="30" y="282" width="140" height="28" rx="14" fill="#F59E0B"/>
+    <text x="100" y="300" text-anchor="middle" fill="#0D1117" font-family="sans-serif" font-size="11" font-weight="600">SAVE ENTRY</text>
+
+    <text x="100" y="325" text-anchor="middle" fill="#F59E0B" font-family="monospace" font-size="10">Home</text>
+  </g>
+
+  <!-- Phone 2: Calendar (Year in Pixels) -->
+  <g transform="translate(260, 70)">
+    <rect x="0" y="0" width="200" height="330" rx="20" class="phone"/>
+    <rect x="6" y="6" width="188" height="318" rx="16" fill="#0D1117"/>
+
+    <text x="100" y="24" text-anchor="middle" fill="#e6edf3" font-family="sans-serif" font-size="10" font-weight="600">9:41</text>
+
+    <!-- Title -->
+    <text x="100" y="52" text-anchor="middle" fill="#e6edf3" font-family="sans-serif" font-size="14" font-weight="300">2026</text>
+
+    <!-- Month headers -->
+    <text x="14" y="72" fill="#8b949e" font-family="sans-serif" font-size="6">J F M A M J J A S O N D</text>
+
+    <!-- Year in pixels grid - showing some colored pixels -->
+    <g transform="translate(10, 80)">
+      <!-- Row 1 (Jan 1 - Dec 1) -->
+      <rect x="0" y="0" width="13" height="7" rx="1" class="green"/>
+      <rect x="15" y="0" width="13" height="7" rx="1" class="teal"/>
+      <rect x="30" y="0" width="13" height="7" rx="1" class="green"/>
+      <rect x="45" y="0" width="13" height="7" rx="1" fill="#2A3145"/>
+      <rect x="60" y="0" width="13" height="7" rx="1" class="teal"/>
+      <rect x="75" y="0" width="13" height="7" rx="1" class="green"/>
+      <rect x="90" y="0" width="13" height="7" rx="1" fill="#2A3145"/>
+      <rect x="105" y="0" width="13" height="7" rx="1" class="green"/>
+      <rect x="120" y="0" width="13" height="7" rx="1" fill="#2A3145"/>
+      <rect x="135" y="0" width="13" height="7" rx="1" class="teal"/>
+      <rect x="150" y="0" width="13" height="7" rx="1" class="green"/>
+      <rect x="165" y="0" width="13" height="7" rx="1" fill="#2A3145"/>
+
+      <!-- More rows -->
+      <rect x="0" y="9" width="13" height="7" rx="1" class="teal"/>
+      <rect x="15" y="9" width="13" height="7" rx="1" fill="#2A3145"/>
+      <rect x="30" y="9" width="13" height="7" rx="1" class="orange"/>
+      <rect x="45" y="9" width="13" height="7" rx="1" class="green"/>
+      <rect x="60" y="9" width="13" height="7" rx="1" class="teal"/>
+      <rect x="75" y="9" width="13" height="7" rx="1" class="green"/>
+      <rect x="90" y="9" width="13" height="7" rx="1" class="teal"/>
+      <rect x="105" y="9" width="13" height="7" rx="1" class="orange"/>
+      <rect x="120" y="9" width="13" height="7" rx="1" fill="#2A3145"/>
+      <rect x="135" y="9" width="13" height="7" rx="1" class="green"/>
+      <rect x="150" y="9" width="13" height="7" rx="1" class="teal"/>
+      <rect x="165" y="9" width="13" height="7" rx="1" class="green"/>
+
+      <rect x="0" y="18" width="13" height="7" rx="1" class="green"/>
+      <rect x="15" y="18" width="13" height="7" rx="1" class="green"/>
+      <rect x="30" y="18" width="13" height="7" rx="1" class="teal"/>
+      <rect x="45" y="18" width="13" height="7" rx="1" class="green"/>
+      <rect x="60" y="18" width="13" height="7" rx="1" class="orange"/>
+      <rect x="75" y="18" width="13" height="7" rx="1" class="teal"/>
+      <rect x="90" y="18" width="13" height="7" rx="1" class="green"/>
+      <rect x="105" y="18" width="13" height="7" rx="1" fill="#2A3145"/>
+      <rect x="120" y="18" width="13" height="7" rx="1" class="teal"/>
+      <rect x="135" y="18" width="13" height="7" rx="1" class="green"/>
+      <rect x="150" y="18" width="13" height="7" rx="1" class="green"/>
+      <rect x="165" y="18" width="13" height="7" rx="1" class="orange"/>
+
+      <!-- Today highlighted -->
+      <rect x="0" y="27" width="13" height="7" rx="1" class="green"/>
+      <rect x="15" y="27" width="13" height="7" rx="1" class="teal" stroke="#58a6ff" stroke-width="1"/>
+      <rect x="30" y="27" width="13" height="7" rx="1" class="green"/>
+      <rect x="45" y="27" width="13" height="7" rx="1" class="teal"/>
+      <rect x="60" y="27" width="13" height="7" rx="1" class="orange"/>
+      <rect x="75" y="27" width="13" height="7" rx="1" class="green"/>
+      <rect x="90" y="27" width="13" height="7" rx="1" class="teal"/>
+      <rect x="105" y="27" width="13" height="7" rx="1" class="green"/>
+      <rect x="120" y="27" width="13" height="7" rx="1" fill="#2A3145"/>
+      <rect x="135" y="27" width="13" height="7" rx="1" class="green"/>
+      <rect x="150" y="27" width="13" height="7" rx="1" class="teal"/>
+      <rect x="165" y="27" width="13" height="7" rx="1" fill="#2A3145"/>
+    </g>
+
+    <!-- Mood stats -->
+    <rect x="12" y="130" width="176" height="52" rx="8" fill="#161b22"/>
+    <text x="24" y="148" fill="#8b949e" font-family="sans-serif" font-size="8">📊 Mood Statistics</text>
+    <text x="24" y="162" fill="#e6edf3" font-family="sans-serif" font-size="10">Average: 😊 4.2</text>
+    <text x="24" y="176" fill="#e6edf3" font-family="sans-serif" font-size="10">Consistency: 68%</text>
+
+    <!-- Mood legend -->
+    <rect x="12" y="190" width="176" height="40" rx="8" fill="#161b22"/>
+    <text x="24" y="206" fill="#8b949e" font-family="sans-serif" font-size="8">Mood Legend</text>
+    <rect x="24" y="214" width="10" height="10" rx="2" class="green"/>
+    <text x="38" y="222" fill="#8b949e" font-family="sans-serif" font-size="7">Great</text>
+    <rect x="62" y="214" width="10" height="10" rx="2" class="teal"/>
+    <text x="76" y="222" fill="#8b949e" font-family="sans-serif" font-size="7">Good</text>
+    <rect x="100" y="214" width="10" height="10" rx="2" class="orange"/>
+    <text x="114" y="222" fill="#8b949e" font-family="sans-serif" font-size="7">Meh</text>
+
+    <text x="100" y="325" text-anchor="middle" fill="#F59E0B" font-family="monospace" font-size="10">Calendar</text>
+  </g>
+
+  <!-- Phone 3: Settings / PIN Lock -->
+  <g transform="translate(480, 70)">
+    <rect x="0" y="0" width="200" height="330" rx="20" class="phone"/>
+    <rect x="6" y="6" width="188" height="318" rx="16" fill="#0D1117"/>
+
+    <text x="100" y="24" text-anchor="middle" fill="#e6edf3" font-family="sans-serif" font-size="10" font-weight="600">9:41</text>
+
+    <!-- Title -->
+    <text x="100" y="52" text-anchor="middle" fill="#e6edf3" font-family="sans-serif" font-size="14">Settings</text>
+
+    <!-- PIN Lock toggle -->
+    <rect x="12" y="68" width="176" height="44" rx="8" fill="#161b22"/>
+    <text x="24" y="86" fill="#e6edf3" font-family="sans-serif" font-size="11">🔒 PIN Lock</text>
+    <rect x="140" y="78" width="36" height="20" rx="10" fill="#22C55E"/>
+    <circle cx="166" cy="88" r="8" fill="white"/>
+
+    <!-- Export -->
+    <rect x="12" y="120" width="176" height="44" rx="8" fill="#161b22"/>
+    <text x="24" y="138" fill="#e6edf3" font-family="sans-serif" font-size="11">📤 Export Journal</text>
+    <text x="24" y="154" fill="#8b949e" font-family="sans-serif" font-size="8">Save as JSON file</text>
+
+    <!-- Notifications -->
+    <rect x="12" y="172" width="176" height="44" rx="8" fill="#161b22"/>
+    <text x="24" y="190" fill="#e6edf3" font-family="sans-serif" font-size="11">🔔 Notifications</text>
+    <text x="24" y="206" fill="#8b949e" font-family="sans-serif" font-size="8">Sunrise &amp; sunset reminders</text>
+
+    <!-- About -->
+    <rect x="12" y="224" width="176" height="44" rx="8" fill="#161b22"/>
+    <text x="24" y="242" fill="#e6edf3" font-family="sans-serif" font-size="11">ℹ️ About Gloam</text>
+    <text x="24" y="258" fill="#8b949e" font-family="sans-serif" font-size="8">v2.0.0 · MIT License</text>
+
+    <!-- Privacy note -->
+    <rect x="12" y="280" width="176" height="30" rx="6" fill="#161b22"/>
+    <text x="100" y="294" text-anchor="middle" fill="#8b949e" font-family="sans-serif" font-size="7">Your journal data stays on device</text>
+    <text x="100" y="304" text-anchor="middle" fill="#8b949e" font-family="sans-serif" font-size="7">No cloud · No accounts · No tracking</text>
+
+    <text x="100" y="325" text-anchor="middle" fill="#F59E0B" font-family="monospace" font-size="10">Settings</text>
+  </g>
+</svg>

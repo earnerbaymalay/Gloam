@@ -15,6 +15,10 @@
 
 ![Gloam Solar Cycle](docs/media/hero.svg)
 
+---
+
+![Gloam Screenshots](docs/media/screenshot.svg)
+
 ## What is Gloam?
 
 **Gloam uses a NOAA solar calculator to determine precise sunrise and sunset times for your location. The interface transitions through morning, daytime, sunset, and nighttime themes. Each transition introduces contextually timed CBT prompts selected from a pool of 18 prompts across 6 categories.**
