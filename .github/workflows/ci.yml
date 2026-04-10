@@ -35,12 +35,12 @@ jobs:
         run: |
           ./gradlew composeApp:assembleDebug --no-daemon --stacktrace
           mkdir -p build-artifacts
-          cp composeApp/build/outputs/apk/debug/*.apk build-artifacts/gloam.apk
+          find composeApp/build/outputs/apk/debug -name "*.apk" -exec cp {} build-artifacts/gloam.apk \; -quit
 
       - name: Build release APK (unsigned)
         run: |
           ./gradlew composeApp:assembleRelease --no-daemon --stacktrace
-          # cp composeApp/build/outputs/apk/release/*.apk build-artifacts/gloam-release-unsigned.apk
+          # find composeApp/build/outputs/apk/release -name "*.apk" -exec cp {} build-artifacts/gloam-release-unsigned.apk \; -quit
         continue-on-error: true
 
       - name: Upload APK
