@@ -16,7 +16,16 @@ import androidx.compose.ui.unit.dp
 import com.gloam.data.model.EntryType
 import com.gloam.data.model.JournalEntry
 import com.gloam.ui.components.MoodIndicator
-import kotlinx.datetime.format.DateTimeComponents
+import kotlinx.datetime.DayOfWeek
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.Month
+
+private val DAY_NAMES = listOf("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday")
+private val MONTH_NAMES_LONG = listOf("January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December")
+
+private fun LocalDate.formatFullDate(): String =
+    "${DAY_NAMES[dayOfWeek.ordinal]}, ${MONTH_NAMES_LONG[monthNumber - 1]} $dayOfMonth, $year"
 
 @Composable
 fun EntriesScreen(
@@ -55,7 +64,7 @@ fun EntriesScreen(
             groupedEntries.forEach { (date, dayEntries) ->
                 item {
                     Text(
-                        text = date.format(DateTimeFormatter.ofPattern("EEEE, MMMM d, yyyy")),
+                        text = date.formatFullDate(),
                         style = MaterialTheme.typography.labelLarge,
                         color = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.padding(vertical = 8.dp)

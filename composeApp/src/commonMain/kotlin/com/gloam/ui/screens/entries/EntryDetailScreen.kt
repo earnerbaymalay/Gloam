@@ -18,7 +18,21 @@ import com.gloam.data.model.EntryType
 import com.gloam.data.model.JournalEntry
 import com.gloam.ui.components.MoodIndicator
 import com.gloam.ui.components.MoodSelector
-import kotlinx.datetime.format.DateTimeComponents
+import kotlinx.datetime.DayOfWeek
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.Month
+
+private val DAY_NAMES = listOf("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday")
+private val MONTH_NAMES_SHORT = listOf("Jan", "Feb", "Mar", "Apr", "May", "Jun",
+    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
+private val MONTH_NAMES_LONG = listOf("January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December")
+
+private fun LocalDate.formatFullDate(): String =
+    "${DAY_NAMES[dayOfWeek.ordinal]}, ${MONTH_NAMES_LONG[monthNumber - 1]} $dayOfMonth, $year"
+
+private fun LocalDate.formatShortDate(): String =
+    "${DAY_NAMES[dayOfWeek.ordinal]}, ${MONTH_NAMES_SHORT[monthNumber - 1]} $dayOfMonth"
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

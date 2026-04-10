@@ -22,16 +22,33 @@ import com.gloam.data.model.Prompt
 import com.gloam.ui.components.MoodSelector
 import com.gloam.ui.theme.GloamTheme
 import com.gloam.util.SunCalculator
+import com.gloam.util.SunTimes
 import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDate
+import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.format.DateTimeComponents
 import kotlinx.datetime.toLocalDateTime
 
+private fun LocalDateTime.formatTime(): String {
+    val h = hour % 12
+    val amPm = if (hour < 12) "AM" else "PM"
+    val minuteStr = minute.toString().padStart(2, '0')
+    return "${if (h == 0) 12 else h}:$minuteStr $amPm"
+}
+
+private fun formatCurrentTime(): String {
+    val now = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
+    val h = now.hour % 12
+    val amPm = if (now.hour < 12) "AM" else "PM"
+    val minuteStr = now.minute.toString().padStart(2, '0')
+    return "${if (h == 0) 12 else h}:$minuteStr $amPm"
+}
+
 @Composable
 fun HomeScreen(
-    sunTimes: SunCalculator.SunTimes,
+    sunTimes: SunTimes,
     currentEntryType: EntryType,
     todayEntries: List<JournalEntry>,
     prompts: Triple<Prompt, Prompt, Prompt>?,
@@ -137,7 +154,7 @@ fun HomeScreen(
 
 @Composable
 private fun SunTimesHeader(
-    sunTimes: SunCalculator.SunTimes,
+    sunTimes: SunTimes,
     currentEntryType: EntryType
 ) {
     Row(
@@ -162,7 +179,7 @@ private fun SunTimesHeader(
                 else MaterialTheme.colorScheme.onSurfaceVariant
             )
             Text(
-                text = sunTimes.sunrise.format(DateTimeFormatter.ofPattern("h:mm a")),
+                text = sunTimes.sunrise.formatTime(),
                 style = MaterialTheme.typography.bodyMedium,
                 color = if (currentEntryType == EntryType.SUNRISE) 
                     MaterialTheme.colorScheme.primary 
@@ -181,7 +198,7 @@ private fun SunTimesHeader(
             modifier = Modifier.weight(1f)
         ) {
             Text(
-                text = LocalTime.now().format(DateTimeFormatter.ofPattern("h:mm a")),
+                text = formatCurrentTime(),
                 style = MaterialTheme.typography.titleLarge,
                 color = MaterialTheme.colorScheme.onSurface
             )
@@ -205,7 +222,7 @@ private fun SunTimesHeader(
                 else MaterialTheme.colorScheme.onSurfaceVariant
             )
             Text(
-                text = sunTimes.sunset.format(DateTimeFormatter.ofPattern("h:mm a")),
+                text = sunTimes.sunset.formatTime(),
                 style = MaterialTheme.typography.bodyMedium,
                 color = if (currentEntryType == EntryType.SUNSET) 
                     MaterialTheme.colorScheme.primary 

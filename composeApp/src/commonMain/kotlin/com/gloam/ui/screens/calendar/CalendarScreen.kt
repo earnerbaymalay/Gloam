@@ -92,7 +92,7 @@ fun CalendarScreen(
 @Composable
 private fun MoodStatsSummary(moodRecords: List<MoodRecord>) {
     val totalDays = moodRecords.size
-    val avgMood = if (totalDays > 0) moodRecords.map { it.averageMood }.average() else 0.0
+    val avgMood = if (totalDays > 0) moodRecords.mapNotNull { it.averageMood }.average() else 0.0
     
     val moodDistribution = (1..5).associateWith { score ->
         moodRecords.count { it.averageMood.toInt() == score }
