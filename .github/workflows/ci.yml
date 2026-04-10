@@ -6,6 +6,7 @@ on:
     tags: [ 'v*' ]
   pull_request:
     branches: [ main ]
+  workflow_dispatch:
 
 env:
   GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx4g -Dorg.gradle.parallel=true"
@@ -107,11 +108,11 @@ jobs:
           path: composeApp/build/compose/binaries/main/app/
           retention-days: 30
 
-  # ── Create GitHub Release on Tag ──
+  # ── Create GitHub Release ──
   release:
     name: Create Release
     needs: [android, desktop-linux]
-    if: startsWith(github.ref, 'refs/tags/')
+    if: startsWith(github.ref, 'refs/tags/') || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -128,12 +129,14 @@ jobs:
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
+          name: ${{ github.ref_name }} (Build ${{ github.run_number }})
+          tag_name: ${{ github.ref_type == 'tag' && github.ref_name || format('latest-build-{0}', github.run_number) }}
           files: |
             artifacts/**/*.apk
             artifacts/**/*.deb
             artifacts/**/*.tar.gz
           generate_release_notes: true
           draft: false
-          prerelease: ${{ contains(github.ref_name, '-') }}
+          prerelease: ${{ contains(github.ref_name, '-') || github.event_name == 'workflow_dispatch' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
