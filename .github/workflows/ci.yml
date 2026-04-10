@@ -33,6 +33,12 @@ jobs:
       - name: Grant execute permission
         run: chmod +x gradlew
 
+      - name: Debug file structure
+        run: |
+          ls -R
+          find . -name "gradle-wrapper.jar"
+          file gradle/wrapper/gradle-wrapper.jar
+
       - name: Build debug APK
         run: |
           ./gradlew composeApp:assembleDebug --no-daemon --stacktrace

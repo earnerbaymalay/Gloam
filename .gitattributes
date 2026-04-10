@@ -19,3 +19,8 @@
 *.jpg binary
 *.gif binary
 *.svg binary
+*.ico binary
+*.jar binary
+*.aar binary
+*.so binary
+*.deb binary
