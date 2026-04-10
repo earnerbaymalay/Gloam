@@ -137,7 +137,7 @@ jobs:
           files: artifacts/**/*.apk
           generate_release_notes: true
           draft: false
-          prerelease: ${{ contains(github.ref_name, '-') || github.event_name == 'workflow_dispatch' }}
+          prerelease: ${{ contains(github.ref_name, '-') && github.event_name != 'workflow_dispatch' }}
           fail_on_unmatched_files: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
