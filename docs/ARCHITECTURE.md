@@ -4,6 +4,8 @@
 
 Gloam is a **single-module Android application** built with Kotlin and Jetpack Compose. It follows a **Clean Architecture-inspired** pattern with clear separation between data, presentation, and UI layers.
 
+![Gloam Architecture](media/architecture.svg)
+
 ```
 ┌──────────────────────────────────────────────────┐
 │                    MainActivity                    │
@@ -22,6 +24,12 @@ Gloam is a **single-module Android application** built with Kotlin and Jetpack C
 │  SunCalculator  │  NotificationScheduler          │
 └──────────────┴───────────────────────────────────┘
 ```
+
+## Solar Day-Night Cycle
+
+Gloam uses the NOAA solar algorithm to calculate precise sunrise/sunset times. The UI theme smoothly interpolates between dark and light palettes based on solar position.
+
+![Solar Cycle](media/solar-cycle.svg)
 
 ## Package Structure
 

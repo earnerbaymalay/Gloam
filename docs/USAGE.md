@@ -1,7 +1,9 @@
 <div align="center">
 
-# ⬡ G L O A M
+# 🌗 G L O A M
 ### *Usage Guide & Solar-Timed Journaling.*
+
+**[🔧 Troubleshooting](../TROUBLESHOOTING.md)** · **[📲 Sideload Hub](https://earnerbaymalay.github.io/sideload/)** · **[↩ Back to README](../README.md)**
 
 </div>
 

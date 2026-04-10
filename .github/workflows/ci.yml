@@ -30,26 +30,21 @@ jobs:
           java-version: '17'
           cache: gradle
 
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install Android SDK components
+        run: |
+          sdkmanager "platforms;android-34" "build-tools;34.0.0" "platform-tools"
+
       - name: Grant execute permission
         run: chmod +x gradlew
-
-      - name: Debug file structure
-        run: |
-          ls -R
-          find . -name "gradle-wrapper.jar"
-          file gradle/wrapper/gradle-wrapper.jar
 
       - name: Build debug APK
         run: |
           ./gradlew composeApp:assembleDebug --no-daemon --stacktrace
           mkdir -p build-artifacts
           find composeApp/build/outputs/apk/debug -name "*.apk" -exec cp {} build-artifacts/gloam.apk \; -quit
-
-      - name: Build release APK (unsigned)
-        run: |
-          ./gradlew composeApp:assembleRelease --no-daemon --stacktrace
-          # find composeApp/build/outputs/apk/release -name "*.apk" -exec cp {} build-artifacts/gloam-release-unsigned.apk \; -quit
-        continue-on-error: true
 
       - name: Upload APK
         if: always()
@@ -118,17 +113,18 @@ jobs:
   # ── Create GitHub Release ──
   release:
     name: Create Release
-    needs: [android, desktop-linux]
+    needs: [android]
     if: startsWith(github.ref, 'refs/tags/') || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     permissions:
       contents: write
 
     steps:
-      - name: Download all artifacts
+      - name: Download Android APK
         uses: actions/download-artifact@v4
         with:
-          path: artifacts
+          name: gloam-android-apk
+          path: artifacts/android
 
       - name: List artifacts
         run: find artifacts/ -type f | sort
@@ -136,14 +132,12 @@ jobs:
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
-          name: ${{ github.ref_name }} (Build ${{ github.run_number }})
-          tag_name: ${{ github.ref_type == 'tag' && github.ref_name || format('latest-build-{0}', github.run_number) }}
-          files: |
-            artifacts/**/*.apk
-            artifacts/**/*.deb
-            artifacts/**/*.tar.gz
+          tag_name: ${{ github.ref_type == 'tag' && github.ref_name || format('v{0}', github.run_number) }}
+          name: ${{ github.ref_type == 'tag' && github.ref_name || format('Build {0}', github.run_number) }}
+          files: artifacts/**/*.apk
           generate_release_notes: true
           draft: false
           prerelease: ${{ contains(github.ref_name, '-') || github.event_name == 'workflow_dispatch' }}
+          fail_on_unmatched_files: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

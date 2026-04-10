@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="260" viewBox="0 0 720 260">
+  <style>
+    .bg { fill: #0d1117; }
+    .card { fill: #161b22; rx: 6; }
+    .card-border { stroke: #30363d; stroke-width: 1; fill: none; rx: 6; }
+    .title { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 13px; font-weight: 600; }
+    .text { font-family: 'SF Mono', 'Fira Code', monospace; font-size: 11px; }
+    .small { font-size: 10px; }
+    .white { fill: #e6edf3; }
+    .dim { fill: #8b949e; }
+    .sun { fill: #f59e0b; }
+    .moon { fill: #8b5cf6; }
+    .green { fill: #3fb950; }
+    .blue { fill: #58a6ff; }
+  </style>
+
+  <rect width="720" height="260" class="bg"/>
+  <text x="36" y="28" class="title white">☀️ Solar Day-Night Cycle → Theme Interpolation</text>
+
+  <!-- Timeline bar -->
+  <rect x="36" y="60" width="648" height="12" rx="6" fill="#0d1117"/>
+  <!-- Dark segment: midnight to sunrise -->
+  <rect x="36" y="60" width="162" height="12" rx="6" fill="#1a1a2e" opacity="0.8"/>
+  <!-- Sunrise gradient -->
+  <defs>
+    <linearGradient id="dawn" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#1a1a2e"/>
+      <stop offset="100%" stop-color="#f59e0b" stop-opacity="0.3"/>
+    </linearGradient>
+    <linearGradient id="dusk" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#f59e0b" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#1a1a2e"/>
+    </linearGradient>
+    <linearGradient id="day" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#f59e0b" stop-opacity="0.3"/>
+      <stop offset="50%" stop-color="#fbbf24" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="#f59e0b" stop-opacity="0.3"/>
+    </linearGradient>
+  </defs>
+  <rect x="198" y="60" width="54" height="12" fill="url(#dawn)"/>
+  <!-- Daylight segment -->
+  <rect x="252" y="60" width="216" height="12" fill="url(#day)" opacity="0.6"/>
+  <!-- Sunset gradient -->
+  <rect x="468" y="60" width="54" height="12" fill="url(#dusk)"/>
+  <!-- Night segment -->
+  <rect x="522" y="60" width="162" height="12" rx="0" fill="#1a1a2e" opacity="0.8"/>
+  <!-- Fix right edge rounding -->
+  <rect x="530" y="60" width="154" height="12" fill="#1a1a2e" opacity="0.8"/>
+
+  <!-- Time labels -->
+  <text x="36" y="92" class="text dim" text-anchor="middle">🌙 00:00</text>
+  <text x="198" y="92" class="text sun" text-anchor="middle">🌅 06:30</text>
+  <text x="360" y="92" class="text sun" text-anchor="middle">☀️ 12:08 (Solar Noon)</text>
+  <text x="522" y="92" class="text moon" text-anchor="middle">🌇 17:45</text>
+  <text x="684" y="92" class="text dim" text-anchor="middle">🌙 24:00</text>
+
+  <!-- Theme mapping -->
+  <text x="36" y="130" class="title green">Theme Interpolation (lerp)</text>
+
+  <!-- Dark → Light → Dark mapping -->
+  <rect x="36" y="148" width="162" height="96" class="card"/>
+  <rect x="36" y="148" width="162" height="96" class="card-border"/>
+  <text x="117" y="170" class="title dim" text-anchor="middle">🌙 Night Phase</text>
+  <text x="117" y="192" class="text dim" text-anchor="middle">Progress: 0.0 → 0.1</text>
+  <text x="117" y="212" class="text dim" text-anchor="middle">darkColors (100%)</text>
+  <text x="117" y="232" class="small dim" text-anchor="middle">Deep dark backgrounds</text>
+
+  <rect x="207" y="148" width="144" height="96" class="card"/>
+  <rect x="207" y="148" width="144" height="96" class="card-border"/>
+  <text x="279" y="170" class="title sun" text-anchor="middle">🌅 Sunrise</text>
+  <text x="279" y="192" class="text dim" text-anchor="middle">Progress: 0.1 → 0.5</text>
+  <text x="279" y="212" class="text dim" text-anchor="middle">lerp → lightColors</text>
+  <text x="279" y="232" class="small dim" text-anchor="middle">Warm amber → bright</text>
+
+  <rect x="360" y="148" width="144" height="96" class="card"/>
+  <rect x="360" y="148" width="144" height="96" class="card-border"/>
+  <text x="432" y="170" class="title sun" text-anchor="middle">☀️ Daytime</text>
+  <text x="432" y="192" class="text dim" text-anchor="middle">Progress: 0.5 → 1.0</text>
+  <text x="432" y="212" class="text dim" text-anchor="middle">lerp → darkColors</text>
+  <text x="432" y="232" class="small dim" text-anchor="middle">Bright → warm fade</text>
+
+  <rect x="513" y="148" width="171" height="96" class="card"/>
+  <rect x="513" y="148" width="171" height="96" class="card-border"/>
+  <text x="598" y="170" class="title moon" text-anchor="middle">🌇 Sunset → Night</text>
+  <text x="598" y="192" class="text dim" text-anchor="middle">Progress: 1.0 → 0.0</text>
+  <text x="598" y="212" class="text dim" text-anchor="middle">darkColors (100%)</text>
+  <text x="598" y="232" class="small dim" text-anchor="middle">Purple → deep dark</text>
+</svg>

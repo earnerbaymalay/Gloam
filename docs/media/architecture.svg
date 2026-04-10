@@ -1,0 +1,95 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="400" viewBox="0 0 720 400">
+  <style>
+    .bg { fill: #0d1117; }
+    .card { fill: #161b22; rx: 6; }
+    .card-border { stroke: #30363d; stroke-width: 1; fill: none; rx: 6; }
+    .title { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 14px; font-weight: 600; }
+    .text { font-family: 'SF Mono', 'Fira Code', monospace; font-size: 11px; }
+    .small { font-size: 10px; }
+    .white { fill: #e6edf3; }
+    .dim { fill: #8b949e; }
+    .accent { fill: #58a6ff; }
+    .teal { fill: #3fb950; }
+    .orange { fill: #f0883e; }
+    .purple { fill: #bc8cff; }
+    .pink { fill: #f778ba; }
+    .arrow-line { stroke: #30363d; stroke-width: 1.5; }
+  </style>
+
+  <!-- Background -->
+  <rect width="720" height="400" class="bg"/>
+
+  <!-- Title -->
+  <text x="36" y="32" class="title white">Gloam Architecture</text>
+  <text x="36" y="48" class="text dim">Single-module Android app · Clean Architecture · SQLCipher encrypted</text>
+
+  <!-- Layer 1: UI -->
+  <rect x="36" y="70" width="648" height="64" class="card"/>
+  <rect x="36" y="70" width="648" height="64" class="card-border"/>
+  <text x="360" y="92" class="title accent" text-anchor="middle">📱 UI Layer (Jetpack Compose)</text>
+  <text x="120" y="116" class="text dim" text-anchor="middle">HomeScreen</text>
+  <text x="270" y="116" class="text dim" text-anchor="middle">CalendarScreen</text>
+  <text x="430" y="116" class="text dim" text-anchor="middle">EntriesScreen</text>
+  <text x="580" y="116" class="text dim" text-anchor="middle">SettingsScreen</text>
+  <!-- Dividers -->
+  <line x1="195" y1="104" x2="195" y2="126" stroke="#21262d" stroke-width="1"/>
+  <line x1="345" y1="104" x2="345" y2="126" stroke="#21262d" stroke-width="1"/>
+  <line x1="505" y1="104" x2="505" y2="126" stroke="#21262d" stroke-width="1"/>
+
+  <!-- Arrow -->
+  <line x1="360" y1="134" x2="360" y2="156" class="arrow-line" marker-end="url(#arrowhead)"/>
+
+  <!-- Layer 2: ViewModel -->
+  <rect x="36" y="156" width="648" height="52" class="card"/>
+  <rect x="36" y="156" width="648" height="52" class="card-border"/>
+  <text x="360" y="178" class="title teal" text-anchor="middle">🧠 GloamViewModel</text>
+  <text x="160" y="200" class="text dim" text-anchor="middle">Location State</text>
+  <text x="310" y="200" class="text dim" text-anchor="middle">Sunrise/Sunset Times</text>
+  <text x="480" y="200" class="text dim" text-anchor="middle">CRUD Operations</text>
+  <line x1="235" y1="188" x2="235" y2="204" stroke="#21262d" stroke-width="1"/>
+  <line x1="390" y1="188" x2="390" y2="204" stroke="#21262d" stroke-width="1"/>
+
+  <!-- Arrow -->
+  <line x1="360" y1="208" x2="360" y2="230" class="arrow-line" marker-end="url(#arrowhead)"/>
+
+  <!-- Layer 3: Repository -->
+  <rect x="36" y="230" width="648" height="52" class="card"/>
+  <rect x="36" y="230" width="648" height="52" class="card-border"/>
+  <text x="360" y="252" class="title orange" text-anchor="middle">📦 GloamRepository</text>
+  <text x="180" y="274" class="text dim" text-anchor="middle">Entry CRUD + Mood Auto-Calc</text>
+  <text x="380" y="274" class="text dim" text-anchor="middle">Random Prompt Selection</text>
+  <text x="560" y="274" class="text dim" text-anchor="middle">Year Mood Aggregation</text>
+  <line x1="280" y1="262" x2="280" y2="278" stroke="#21262d" stroke-width="1"/>
+  <line x1="470" y1="262" x2="470" y2="278" stroke="#21262d" stroke-width="1"/>
+
+  <!-- Arrow -->
+  <line x1="360" y1="282" x2="360" y2="304" class="arrow-line" marker-end="url(#arrowhead)"/>
+
+  <!-- Layer 4: Data -->
+  <rect x="36" y="304" width="420" height="80" class="card"/>
+  <rect x="36" y="304" width="420" height="80" class="card-border"/>
+  <text x="246" y="326" class="title purple" text-anchor="middle">🗄️ Data Layer (Room + SQLCipher)</text>
+  <text x="120" y="352" class="text dim" text-anchor="middle">JournalEntryDao</text>
+  <text x="246" y="352" class="text dim" text-anchor="middle">MoodRecordDao</text>
+  <text x="372" y="352" class="text dim" text-anchor="middle">PromptDao</text>
+  <text x="246" y="376" class="text small dim" text-anchor="middle">AES-256 encrypted database · Random 32-char passphrase</text>
+  <line x1="183" y1="340" x2="183" y2="364" stroke="#21262d" stroke-width="1"/>
+  <line x1="309" y1="340" x2="309" y2="364" stroke="#21262d" stroke-width="1"/>
+
+  <!-- Side: Utilities -->
+  <rect x="480" y="304" width="204" height="80" class="card"/>
+  <rect x="480" y="304" width="204" height="80" class="card-border"/>
+  <text x="582" y="330" class="title pink" text-anchor="middle">🔧 Utilities</text>
+  <text x="582" y="354" class="text dim" text-anchor="middle">SunCalculator (NOAA)</text>
+  <text x="582" y="374" class="text dim" text-anchor="middle">NotificationScheduler</text>
+
+  <!-- Arrow definition -->
+  <defs>
+    <marker id="arrowhead" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#30363d"/>
+    </marker>
+  </defs>
+
+  <!-- Legend -->
+  <text x="36" y="395" class="text small dim">Solid arrows → direct calls  |  All data stays on-device  |  No DI framework (manual dependency passing)</text>
+</svg>

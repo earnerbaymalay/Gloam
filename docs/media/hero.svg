@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="160" viewBox="0 0 800 160">
+  <defs>
+    <linearGradient id="sunGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#F59E0B">
+        <animate attributeName="stop-color" values="#F59E0B;#FBBF24;#F59E0B" dur="4s" repeatCount="indefinite"/>
+      </stop>
+      <stop offset="100%" style="stop-color:#FBBF24">
+        <animate attributeName="stop-color" values="#FBBF24;#F59E0B;#FBBF24" dur="4s" repeatCount="indefinite"/>
+      </stop>
+    </linearGradient>
+    <linearGradient id="moonGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#8B5CF6">
+        <animate attributeName="stop-color" values="#8B5CF6;#A78BFA;#8B5CF6" dur="4s" repeatCount="indefinite"/>
+      </stop>
+      <stop offset="100%" style="stop-color:#A78BFA">
+        <animate attributeName="stop-color" values="#A78BFA;#8B5CF6;#A78BFA" dur="4s" repeatCount="indefinite"/>
+      </stop>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="160" fill="#0D1117" rx="12"/>
+  <!-- Sun -->
+  <g transform="translate(100, 80)">
+    <circle cx="0" cy="0" r="28" fill="url(#sunGrad)" opacity="0.9">
+      <animate attributeName="r" values="26;30;26" dur="4s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="0" cy="0" r="36" fill="none" stroke="#F59E0B" stroke-width="0.5" opacity="0.3">
+      <animate attributeName="r" values="34;38;34" dur="4s" repeatCount="indefinite"/>
+    </circle>
+    <!-- Sun rays -->
+    <line x1="0" y1="-36" x2="0" y2="-44" stroke="#F59E0B" stroke-width="1" opacity="0.4">
+      <animate attributeName="opacity" values="0.2;0.6;0.2" dur="2s" repeatCount="indefinite"/>
+    </line>
+    <line x1="25" y1="-25" x2="31" y2="-31" stroke="#F59E0B" stroke-width="1" opacity="0.4">
+      <animate attributeName="opacity" values="0.2;0.6;0.2" dur="2.3s" repeatCount="indefinite"/>
+    </line>
+    <line x1="36" y1="0" x2="44" y2="0" stroke="#F59E0B" stroke-width="1" opacity="0.4">
+      <animate attributeName="opacity" values="0.2;0.6;0.2" dur="2.6s" repeatCount="indefinite"/>
+    </line>
+    <line x1="-36" y1="0" x2="-44" y2="0" stroke="#F59E0B" stroke-width="1" opacity="0.4">
+      <animate attributeName="opacity" values="0.2;0.6;0.2" dur="2.9s" repeatCount="indefinite"/>
+    </line>
+  </g>
+  <!-- Moon -->
+  <g transform="translate(700, 80)">
+    <circle cx="0" cy="0" r="24" fill="url(#moonGrad)" opacity="0.8">
+      <animate attributeName="opacity" values="0.6;0.9;0.6" dur="5s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="8" cy="-6" r="18" fill="#0D1117"/>
+  </g>
+  <!-- Arc between sun and moon -->
+  <path d="M 140 80 Q 400 20 660 80" fill="none" stroke="#1E2A3A" stroke-width="1" stroke-dasharray="4,4"/>
+  <path d="M 140 80 Q 400 140 660 80" fill="none" stroke="#1E2A3A" stroke-width="1" stroke-dasharray="4,4"/>
+  <!-- Theme progress indicator -->
+  <g transform="translate(400, 80)">
+    <circle cx="0" cy="0" r="20" fill="none" stroke="#1E2A3A" stroke-width="2"/>
+    <circle cx="0" cy="0" r="20" fill="none" stroke="url(#sunGrad)" stroke-width="2" stroke-dasharray="60 126" stroke-dashoffset="0">
+      <animate attributeName="stroke-dashoffset" values="0;60;0" dur="8s" repeatCount="indefinite"/>
+    </circle>
+    <text x="0" y="4" fill="#F1F5F9" font-family="sans-serif" font-size="10" text-anchor="middle">☀️</text>
+  </g>
+  <!-- Labels -->
+  <text x="150" y="45" fill="#F59E0B" font-family="sans-serif" font-size="13" font-weight="600">Sunrise → Intention</text>
+  <text x="150" y="62" fill="#94A3B8" font-family="sans-serif" font-size="11">Emotional check-in · CBT reframe</text>
+  <text x="450" y="45" fill="#8B5CF6" font-family="sans-serif" font-size="13" font-weight="600">Sunset → Reflection</text>
+  <text x="450" y="62" fill="#94A3B8" font-family="sans-serif" font-size="11">Gratitude · CBT closure</text>
+  <text x="150" y="110" fill="#22C55E" font-family="sans-serif" font-size="13" font-weight="600">Mood Tracking</text>
+  <text x="150" y="127" fill="#94A3B8" font-family="sans-serif" font-size="11">5-point scale · Year-in-pixels · Auto-averaging</text>
+  <text x="450" y="110" fill="#58A6FF" font-family="sans-serif" font-size="13" font-weight="600">CBT Prompts</text>
+  <text x="450" y="127" fill="#94A3B8" font-family="sans-serif" font-size="11">6 categories · 18 prompts · Random selection</text>
+</svg>
