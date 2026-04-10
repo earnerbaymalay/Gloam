@@ -9,7 +9,8 @@ on:
   workflow_dispatch:
 
 env:
-  GRADLE_OPTS: -Xmx4g -Dorg.gradle.parallel=true
+  JAVA_TOOL_OPTIONS: -Xmx4g
+  GRADLE_OPTS: -Dorg.gradle.parallel=true
 
 jobs:
   # ── Android Build ──
