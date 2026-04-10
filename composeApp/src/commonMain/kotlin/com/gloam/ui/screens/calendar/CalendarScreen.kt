@@ -95,7 +95,7 @@ private fun MoodStatsSummary(moodRecords: List<MoodRecord>) {
     val avgMood = if (totalDays > 0) moodRecords.mapNotNull { it.averageMood }.average() else 0.0
     
     val moodDistribution = (1..5).associateWith { score ->
-        moodRecords.count { it.averageMood.toInt() == score }
+        moodRecords.count { it.averageMood?.toInt() == score }
     }
     
     Card(

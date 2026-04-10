@@ -20,6 +20,7 @@ import com.gloam.ui.components.MoodIndicator
 import com.gloam.ui.components.MoodSelector
 import kotlinx.datetime.DayOfWeek
 import kotlinx.datetime.LocalDate
+import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.Month
 
 private val DAY_NAMES = listOf("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday")
@@ -33,6 +34,13 @@ private fun LocalDate.formatFullDate(): String =
 
 private fun LocalDate.formatShortDate(): String =
     "${DAY_NAMES[dayOfWeek.ordinal]}, ${MONTH_NAMES_SHORT[monthNumber - 1]} $dayOfMonth"
+
+private fun LocalDateTime.formatTime(): String {
+    val h = hour % 12
+    val amPm = if (hour < 12) "AM" else "PM"
+    val minuteStr = minute.toString().padStart(2, '0')
+    return "${if (h == 0) 12 else h}:$minuteStr $amPm"
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

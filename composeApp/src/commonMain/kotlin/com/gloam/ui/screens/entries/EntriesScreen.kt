@@ -18,6 +18,7 @@ import com.gloam.data.model.JournalEntry
 import com.gloam.ui.components.MoodIndicator
 import kotlinx.datetime.DayOfWeek
 import kotlinx.datetime.LocalDate
+import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.Month
 
 private val DAY_NAMES = listOf("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday")
@@ -26,6 +27,13 @@ private val MONTH_NAMES_LONG = listOf("January", "February", "March", "April", "
 
 private fun LocalDate.formatFullDate(): String =
     "${DAY_NAMES[dayOfWeek.ordinal]}, ${MONTH_NAMES_LONG[monthNumber - 1]} $dayOfMonth, $year"
+
+private fun LocalDateTime.formatTime(): String {
+    val h = hour % 12
+    val amPm = if (hour < 12) "AM" else "PM"
+    val minuteStr = minute.toString().padStart(2, '0')
+    return "${if (h == 0) 12 else h}:$minuteStr $amPm"
+}
 
 @Composable
 fun EntriesScreen(
@@ -139,7 +147,7 @@ private fun EntryCard(
             }
             
             Text(
-                text = entry.createdAt.format(DateTimeFormatter.ofPattern("h:mm a")),
+                text = entry.createdAt.formatTime(),
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
             )

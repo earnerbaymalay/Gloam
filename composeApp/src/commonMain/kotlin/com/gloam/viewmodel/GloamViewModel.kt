@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.gloam.data.model.*
 import com.gloam.data.repository.GloamRepository
 import com.gloam.util.SunCalculator
+import com.gloam.util.SunTimes
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.datetime.*
