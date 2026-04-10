@@ -15,7 +15,10 @@ import com.gloam.data.model.MoodRecord
 import com.gloam.ui.components.MoodIndicator
 import com.gloam.ui.components.YearInPixels
 import com.gloam.ui.theme.MoodColors
+import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDate
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 
 @Composable
 fun CalendarScreen(
@@ -26,7 +29,7 @@ fun CalendarScreen(
     modifier: Modifier = Modifier
 ) {
     val scrollState = rememberScrollState()
-    val currentYear = LocalDate.now().year
+    val currentYear = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date.year
     
     Column(
         modifier = modifier

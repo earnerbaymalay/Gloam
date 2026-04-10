@@ -22,9 +22,12 @@ import com.gloam.data.model.Prompt
 import com.gloam.ui.components.MoodSelector
 import com.gloam.ui.theme.GloamTheme
 import com.gloam.util.SunCalculator
+import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalTime
+import kotlinx.datetime.TimeZone
 import kotlinx.datetime.format.DateTimeComponents
+import kotlinx.datetime.toLocalDateTime
 
 @Composable
 fun HomeScreen(
@@ -66,8 +69,12 @@ fun HomeScreen(
         )
         
         // Today's date
+        val today = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date
+        val dayNames = listOf("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday")
+        val monthNames = listOf("January", "February", "March", "April", "May", "June",
+            "July", "August", "September", "October", "November", "December")
         Text(
-            text = LocalDate.now().format(DateTimeFormatter.ofPattern("EEEE, MMMM d")),
+            text = "${dayNames[today.dayOfWeek.ordinal]}, ${monthNames[today.monthNumber - 1]} ${today.dayOfMonth}",
             style = MaterialTheme.typography.headlineMedium,
             color = MaterialTheme.colorScheme.onBackground
         )

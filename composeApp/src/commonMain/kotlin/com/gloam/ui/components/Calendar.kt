@@ -20,8 +20,25 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.gloam.data.model.MoodRecord
 import com.gloam.ui.theme.MoodColors
-import kotlinx.datetime.LocalDate
-import kotlinx.datetime.Month
+import kotlinx.datetime.*
+import kotlin.math.ceil
+
+private val MONTH_NAMES = listOf(
+    "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+)
+
+private fun daysInMonth(year: Int, month: Int): Int =
+    if (month == 2) {
+        if (year % 4 == 0 && (year % 100 != 0 || year % 400 == 0)) 29 else 28
+    } else if (month in listOf(4, 6, 9, 11)) 30 else 31
+
+private fun firstDayOfMonth(year: Int, month: Int): Int {
+    val date = LocalDate(year, Month(month), 1)
+    return date.dayOfWeek.ordinal % 7
+}
+
+private fun today(): LocalDate = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date
 
 @Composable
 fun YearInPixels(
@@ -31,8 +48,8 @@ fun YearInPixels(
     modifier: Modifier = Modifier
 ) {
     val moodMap = moodRecords.associateBy { it.date }
-    val today = LocalDate.now()
-    
+    val today = today()
+
     Column(modifier = modifier.fillMaxWidth()) {
         // Month headers
         Row(
@@ -41,9 +58,7 @@ fun YearInPixels(
         ) {
             (1..12).forEach { month ->
                 Text(
-                    text = YearMonth.of(year, month).month
-                        .getDisplayName(TextStyle.SHORT, Locale.getDefault())
-                        .take(1),
+                    text = MONTH_NAMES[month - 1].take(1),
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.weight(1f),
@@ -51,9 +66,9 @@ fun YearInPixels(
                 )
             }
         }
-        
+
         Spacer(modifier = Modifier.height(8.dp))
-        
+
         // Grid: 31 rows x 12 columns
         Column(
             verticalArrangement = Arrangement.spacedBy(2.dp)
@@ -64,16 +79,15 @@ fun YearInPixels(
                     horizontalArrangement = Arrangement.spacedBy(2.dp)
                 ) {
                     (1..12).forEach { month ->
-                        val date = try {
-                            LocalDate.of(year, month, day)
-                        } catch (e: Exception) {
-                            null
-                        }
-                        
+                        val maxDays = daysInMonth(year, month)
+                        val date = if (day <= maxDays) {
+                            LocalDate(year, Month(month), day)
+                        } else null
+
                         val mood = date?.let { moodMap[it] }
                         val isToday = date == today
-                        val isFuture = date?.isAfter(today) ?: true
-                        
+                        val isFuture = date?.let { it > today } ?: true
+
                         PixelCell(
                             mood = mood?.averageMood,
                             isToday = isToday,
@@ -104,12 +118,12 @@ private fun PixelCell(
         mood != null -> MoodColors.forScore(mood.toInt().coerceIn(1, 5))
         else -> MaterialTheme.colorScheme.surfaceVariant
     }
-    
+
     val borderColor = when {
         isToday -> MaterialTheme.colorScheme.primary
         else -> Color.Transparent
     }
-    
+
     Box(
         modifier = modifier
             .aspectRatio(1f)
@@ -128,16 +142,17 @@ private fun PixelCell(
 
 @Composable
 fun MonthCalendar(
-    yearMonth: YearMonth,
+    year: Int,
+    month: Int,
     moodRecords: List<MoodRecord>,
     onDateClick: (LocalDate) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val moodMap = moodRecords.associateBy { it.date }
-    val today = LocalDate.now()
-    val daysInMonth = yearMonth.lengthOfMonth()
-    val firstDayOfWeek = yearMonth.atDay(1).dayOfWeek.value % 7
-    
+    val today = today()
+    val daysInMonth = daysInMonth(year, month)
+    val firstDayOfWeek = firstDayOfMonth(year, month)
+
     Column(modifier = modifier) {
         // Day headers
         Row(
@@ -154,13 +169,13 @@ fun MonthCalendar(
                 )
             }
         }
-        
+
         Spacer(modifier = Modifier.height(8.dp))
-        
+
         // Calendar grid
         val totalCells = firstDayOfWeek + daysInMonth
-        val rows = (totalCells + 6) / 7
-        
+        val rows = ceil(totalCells / 7.0).toInt()
+
         Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
             repeat(rows) { row ->
                 Row(
@@ -170,13 +185,13 @@ fun MonthCalendar(
                     repeat(7) { col ->
                         val cellIndex = row * 7 + col
                         val dayOfMonth = cellIndex - firstDayOfWeek + 1
-                        
+
                         if (dayOfMonth in 1..daysInMonth) {
-                            val date = yearMonth.atDay(dayOfMonth)
+                            val date = LocalDate(year, Month(month), dayOfMonth)
                             val mood = moodMap[date]
                             val isToday = date == today
-                            val isFuture = date.isAfter(today)
-                            
+                            val isFuture = date > today
+
                             DayCell(
                                 day = dayOfMonth,
                                 mood = mood?.averageMood,
@@ -209,7 +224,7 @@ private fun DayCell(
         mood != null -> MoodColors.forScore(mood.toInt().coerceIn(1, 5))
         else -> MaterialTheme.colorScheme.surfaceVariant
     }
-    
+
     Box(
         modifier = modifier
             .aspectRatio(1f)
