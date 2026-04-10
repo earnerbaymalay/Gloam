@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
 
 env:
-  GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx4g -Dorg.gradle.parallel=true"
+  GRADLE_OPTS: -Xmx4g -Dorg.gradle.parallel=true
 
 jobs:
   # ── Android Build ──
