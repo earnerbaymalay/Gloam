@@ -123,7 +123,7 @@ Open in Android Studio, sync Gradle, then run. Minimum SDK is 26, target SDK is 
 | Project | Platform | Description | Link |
 |---------|----------|-------------|------|
 | 🌌 **Aether** | 📱 Android (Termux) | Local-first AI workstation | [Source →](https://github.com/earnerbaymalay/aether) |
-| 🛡️ **Cyph3rChat** | 📱 Android | E2E encrypted messaging | [Source →](https://github.com/earnerbaymalay/e2eecc) |
+| 🛡️ **Cyph3rChat** | 📱 Android | E2E encrypted messaging | [Source →](https://github.com/earnerbaymalay/cyph3rchat) |
 | 📲 **Sideload Hub** | 🌐 Web / PWA | Central app distribution | [Open Hub →](https://earnerbaymalay.github.io/sideload/) |
 | 🧰 **Termux-Vault** | 📱 Android | Encrypted secrets manager | [Source →](https://github.com/earnerbaymalay/Termux-Vault) |
 
