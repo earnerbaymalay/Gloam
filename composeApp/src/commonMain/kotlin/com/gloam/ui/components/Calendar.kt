@@ -21,9 +21,7 @@ import androidx.compose.ui.unit.sp
 import com.gloam.data.model.MoodRecord
 import com.gloam.ui.theme.MoodColors
 import kotlinx.datetime.LocalDate
-import kotlinx.datetime.LocalDate
 import kotlinx.datetime.Month
-import java.util.*
 
 @Composable
 fun YearInPixels(

@@ -185,7 +185,8 @@ class DesktopGloamDatabase(dbPath: String) : GloamDatabase {
 
         override suspend fun getAverageMoodInRange(start: LocalDate, end: LocalDate): Float? {
             val records = getMoodRecordsInRange(start, end)
-            return records.mapNotNull { it.averageMood }.average().toFloatOrNull()
+            val averages = records.mapNotNull { it.averageMood }
+            return if (averages.isEmpty()) null else averages.average().toFloat()
         }
     }
 

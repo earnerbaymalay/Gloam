@@ -52,7 +52,7 @@ class GloamRepository(private val db: GloamDatabase) {
         val entries = db.journalEntryDao.getEntriesForDate(date)
         val sunriseMood = entries.find { it.entryType == EntryType.SUNRISE }?.moodScore
         val sunsetMood = entries.find { it.entryType == EntryType.SUNSET }?.moodScore
-        val averageMood = listOfNotNull(sunriseMood, sunsetMood).map { it.toFloat() }.average().toFloatOrNull()
+        val averageMood = listOfNotNull(sunriseMood, sunsetMood).map { it.toFloat() }.average().toFloat()
 
         val existing = db.moodRecordDao.getMoodForDate(date)
         val record = MoodRecord(

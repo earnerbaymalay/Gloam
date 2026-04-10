@@ -6,6 +6,7 @@ import androidx.room.Room
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.gloam.data.model.*
+import kotlinx.coroutines.flow.map
 import kotlinx.datetime.*
 import net.sqlcipher.database.SQLiteDatabase
 import net.sqlcipher.database.SupportFactory
@@ -289,7 +290,8 @@ class AndroidMoodRecordDao(private val roomDao: RoomMoodRecordDao) : MoodRecordD
 
     override suspend fun getAverageMoodInRange(start: LocalDate, end: LocalDate): Float? {
         val records = roomDao.getInRange(start.toString(), end.toString())
-        return records.mapNotNull { it.averageMood }.average().toFloatOrNull()
+        val averages = records.mapNotNull { it.averageMood }
+        return if (averages.isEmpty()) null else averages.average().toFloat()
     }
 }
 
