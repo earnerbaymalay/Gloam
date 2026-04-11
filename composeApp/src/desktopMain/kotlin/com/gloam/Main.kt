@@ -11,6 +11,8 @@ import com.gloam.ui.theme.GloamTypography
 import com.gloam.viewmodel.GloamViewModel
 import java.io.File
 
+import kotlinx.coroutines.runBlocking
+
 fun main() = application {
     val dbPath = File(System.getProperty("user.home"), ".gloam/gloam.db").apply {
         parentFile.mkdirs()
@@ -22,14 +24,20 @@ fun main() = application {
 
     Window(
         onCloseRequest = {
-            runCatching { database.close() }
+            runCatching { runBlocking { database.close() } }
             exitApplication()
         },
         title = "Gloam — Solar-Timed Journaling",
         state = WindowState(width = 1100.dp, height = 800.dp),
     ) {
-        GloamTheme(daylightProgress = viewModel.uiState.collectAsState().value.daylightProgress) {
-            GloamDesktopApp(viewModel)
+        val uiState by viewModel.uiState.collectAsState()
+        
+        GloamTheme(daylightProgress = uiState.daylightProgress) {
+            if (uiState.sunTimes != null) {
+                GloamDesktopApp(viewModel)
+            } else {
+                // Show loading or fallback
+            }
         }
     }
 }
@@ -37,11 +45,8 @@ fun main() = application {
 @Composable
 @Preview
 fun GloamDesktopApp(viewModel: GloamViewModel) {
-    // Desktop-specific app shell with window chrome handled by OS
-    // Reuses all shared Compose UI components from commonMain
     val uiState by viewModel.uiState.collectAsState()
 
-    // Simple single-window layout for desktop
     GloamAppContent(
         uiState = uiState,
         viewModel = viewModel
@@ -53,16 +58,16 @@ private fun GloamAppContent(
     uiState: com.gloam.viewmodel.GloamUiState,
     viewModel: GloamViewModel
 ) {
-    // Placeholder: reuse HomeScreen from commonMain
-    // In production, this would be a full desktop layout with sidebar navigation
-    com.gloam.ui.screens.home.HomeScreen(
-        sunTimes = uiState.sunTimes,
-        currentEntryType = uiState.currentEntryType,
-        todayEntries = uiState.todayEntries,
-        prompts = uiState.currentPrompts?.let { listOf(it.first, it.second, it.third) } ?: emptyList(),
-        onLoadPrompts = { viewModel.loadPromptsForType(uiState.currentEntryType) },
-        onSaveEntry = { type, mood, r1, r2, r3 ->
-            // Create and save entry
-        }
-    )
+    uiState.sunTimes?.let { sunTimes ->
+        com.gloam.ui.screens.home.HomeScreen(
+            sunTimes = sunTimes,
+            currentEntryType = uiState.currentEntryType,
+            todayEntries = uiState.todayEntries,
+            prompts = uiState.currentPrompts,
+            onLoadPrompts = { viewModel.loadPromptsForType(uiState.currentEntryType) },
+            onSaveEntry = { type, mood, r1, r2, r3, existing ->
+                // Create and save entry
+            }
+        )
+    }
 }
